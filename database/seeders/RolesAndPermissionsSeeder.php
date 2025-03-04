@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Enum\RoleEnum;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RolesAndPermissionsSeeder extends Seeder
@@ -109,5 +110,18 @@ class RolesAndPermissionsSeeder extends Seeder
                 'view-notification',
             ],
         ];
+
+        // Create permissions if they don't exist
+        foreach ($permissions as $group => $perms) {
+            foreach ($perms as $perm) {
+                Permission::firstOrCreate(['name' => $perm]);
+            }
+        }
+
+        // Assign permissions to roles (Customize as needed)
+        $superAdminRole = Role::where('name', RoleEnum::SUPER_ADMIN)->first();
+        if ($superAdminRole) {
+            $superAdminRole->syncPermissions(Permission::all());
+        }
     }
 }
