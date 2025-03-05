@@ -23,4 +23,14 @@ class Worker extends Model
         'identification_filename',
         'is_verified_worker',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function worker_service()
+    {
+        return $this->hasOne(WorkerJobService::class, 'worker_id');
+    }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\ClientController;
+use App\Http\Controllers\Web\JobPostController;
 use App\Http\Controllers\Web\JobServiceController;
 use App\Http\Controllers\Web\ServiceCategoryController;
 use App\Http\Controllers\Web\UserController;
@@ -31,4 +32,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('service-categories', ServiceCategoryController::class);
 
     Route::resource('job-services', JobServiceController::class);
+
+    Route::resource('job-posts', JobPostController::class);
 });

@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\User;
 use App\Models\UserWallet;
 use App\Models\Worker;
+use App\Models\WorkerJobService;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -41,7 +42,7 @@ class UserSeeder extends Seeder
             'withdraw_method' => null,
         ]);
 
-        Worker::create([
+        $worker = Worker::create([
             'user_id' => $userWorker->id,
             'hourly_rate' => 700,
             'country_code' => 63,
@@ -56,14 +57,19 @@ class UserSeeder extends Seeder
             'is_verified_worker' => true,
         ]);
 
+        WorkerJobService::create([
+            'worker_id' => $worker->id,
+            'service_id' => 2,
+        ]);
+
         /**
          * Seed client
          */
         $userClient = User::create([
-            'first_name' => 'Joe',
-            'last_name' => 'Client',
-            'username' => 'joe_client',
-            'email' => 'joe@godesq.com',
+            'first_name' => 'James',
+            'last_name' => 'Garnfil',
+            'username' => 'james_client',
+            'email' => 'jamesgarnfil15@gmail.com',
             'password' => Hash::make('Test123!'),
             'email_verified_at' => Carbon::now(),
             'status' => 'active'
@@ -79,7 +85,7 @@ class UserSeeder extends Seeder
         ]);
 
         Client::create([
-            'user_id' => $userWorker->id,
+            'user_id' => $userClient->id,
             'country_code' => 63,
             'contact_number' => 9633987953,
             'address' => 'Test Address Rodriguez Rizal',

@@ -123,14 +123,14 @@ return new class extends Migration {
         Schema::create('job_posts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('creator_id')->constrained('clients')->onDelete('cascade');
+            $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
             $table->string('title', 150);
             $table->string('description', 150);
             $table->text('notes')->nullable();
             $table->enum('transaction_type', ['fixed', 'hourly'])->default('fixed');
-            $table->double('price_amount')->default(0);
             $table->string('job_duration', 100)->nullable();
             $table->string('address', 250);
-            $table->string('latitute', 100);
+            $table->string('latitude', 100);
             $table->string('longitude', 100);
             $table->enum('urgency', ['book_now', 'scheduled']);
             $table->date('scheduled_date');
@@ -144,6 +144,15 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('job_post_id')->constrained('job_posts')->cascadeOnDelete();
             $table->string('attachment_filename');
+            $table->timestamps();
+        });
+
+        Schema::create('job_ranked_workers', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('job_post_id')->constrained('job_posts')->cascadeOnDelete();
+            $table->foreignId('worker_id')->constrained('workers')->cascadeOnDelete();
+            $table->double('total_score')->default(0);
+            $table->json('metadata')->nullable();
             $table->timestamps();
         });
 

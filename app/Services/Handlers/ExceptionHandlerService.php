@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Handlers;
 
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -9,12 +9,7 @@ class ExceptionHandlerService
 {
     public function handler($request, Exception $exception)
     {
-
-        if (config('app.debug')) {
-            dd($exception);
-        }
-
-        if ($request->expectsJson()) {
+        if ($request->expectsJson() || $request->ajax()) {
             return $this->handleJSONResponse($exception);
         }
 
@@ -32,6 +27,15 @@ class ExceptionHandlerService
             'message' => $resultCode == 500 ? self::serverErrorMessage() : ($exception->getMessage() ?? "Oops! Something wen't wrong. Please try again."),
         ];
 
+        if (config('app.debug')) {
+            $result['debug'] = [
+                'ip_address' => request()->ip(),
+                'trace' => $exception->getTrace(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+            ];
+        }
+
         return response()->json($result, $resultCode);
     }
 
@@ -43,7 +47,7 @@ class ExceptionHandlerService
     private function getExceptionCode(Exception $exception)
     {
         $exception_code = $exception->getCode();
-        return empty($exception_code) || ! is_numeric($exception_code) ? 500 : (int) $exception_code;
+        return empty($exception_code) || !is_numeric($exception_code) ? 500 : (int) $exception_code;
     }
 
     private static function serverErrorMessage()

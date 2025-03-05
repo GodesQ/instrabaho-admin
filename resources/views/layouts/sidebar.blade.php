@@ -20,7 +20,8 @@
                 <img src="{{ URL::asset('build/images/logo-light.png') }}" alt="" height="17">
             </span>
         </a>
-        <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
+        <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
+            id="vertical-hover">
             <i class="ri-record-circle-line"></i>
         </button>
     </div>
@@ -78,7 +79,7 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="#">
+                    <a class="nav-link menu-link" href="{{ route('job-posts.index') }}">
                         <i class="bx bx-collection"></i> <span>@lang('translation.job-posts')</span>
                     </a>
                 </li>
@@ -90,11 +91,10 @@
                     <div class="collapse menu-dropdown" id="sidebarServices">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ route('service-categories.index') }}"
-                                    class="nav-link">@lang('translation.service-categories')</a>
+                                <a href="{{ route('service-categories.index') }}" class="nav-link">@lang('translation.service-categories')</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{route('job-services.index')}}" class="nav-link">@lang('translation.job-services')</a>
+                                <a href="{{ route('job-services.index') }}" class="nav-link">@lang('translation.job-services')</a>
                             </li>
                         </ul>
                     </div>
