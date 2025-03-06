@@ -175,10 +175,15 @@
                     </div>
                     <div class="d-flex justify-content-end">
                         <div class="btn-group">
-                            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-                                <i class="ri-check-line"></i> Hire Worker & Create Contract
-                            </button>
+
+                            @if ($jobProposal->job_post->status === App\Enum\JobPostStatusEnum::PUBLISHED)
+                                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                                    data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                                    <i class="ri-check-line"></i> Hire Worker & Create Contract
+                                </button>
+                            @endif
+
+
                             <!-- right offcanvas -->
                             <x-offcanvas-contract :jobProposal="$jobProposal" />
                             {{-- <button type="button" class="btn btn-primary">

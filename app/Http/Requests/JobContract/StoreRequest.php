@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\JobContract;
 
-use App\Rules\RequiredApproval;
+use App\Enum\RoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Closure;
+use Illuminate\Validation\Rule;
 
 class StoreRequest extends FormRequest
 {
@@ -24,24 +25,14 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         $user = auth()->user();
+
         return [
             "proposal_id" => ["required"],
             "client_id" => ["required"],
             "contract_amount" => ["required", "numeric"],
-            "is_client_approved" => [
-                function (string $attribute, mixed $value, Closure $fail) use ($user) {
-                    if ($user->hasRole(['worker', 'client']) && is_null($value)) {
-                        $fail("The {$attribute} field is required.");
-                    }
-                },
-            ],
-            "is_worker_approved" => [
-                function (string $attribute, mixed $value, Closure $fail) use ($user) {
-                    if ($user->hasRole(['worker', 'client']) && is_null($value)) {
-                        $fail("The {$attribute} field is required.");
-                    }
-                },
-            ],
+            "is_client_approved" => Rule::requiredIf(!request()->user()->hasRole([RoleEnum::WORKER, RoleEnum::CLIENT])),
+            "is_worker_approved" => Rule::requiredIf(!request()->user()->hasRole([RoleEnum::WORKER, RoleEnum::CLIENT])),
+            "approved_terms_conditions" => ["required"]
         ];
     }
 }

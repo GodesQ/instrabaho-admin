@@ -58,10 +58,11 @@
                 <div class="border-top py-3">
                     <div class="form-group">
                         <div class="form-check form-check-outline form-check-primary mb-3">
-                            <input class="form-check-input" type="checkbox" id="formCheck15">
+                            <input class="form-check-input" type="checkbox" id="formCheck15"  name="approved_terms_conditions">
                             <label class="form-check-label" for="formCheck15">
                                 Agree on <a href="#" class="text-primary">Terms & Conditions</a>
                             </label>
+                            <div class="invalid-feedback mb-2"></div>
                         </div>
                     </div>
                     <button class="btn btn-primary w-100" id="submit-contract-btn">Submit & Save Contract</button>
@@ -81,6 +82,8 @@
             e.preventDefault();
             let formData = new FormData(e.target);
             let submitContractBtn = document.getElementById('submit-contract-btn');
+
+            handleRemoveFieldsError();
 
             $.ajax({
                 url: '{{ route('job-contracts.store') }}',

@@ -135,7 +135,7 @@ return new class extends Migration {
             $table->enum('urgency', ['book_now', 'scheduled']);
             $table->date('scheduled_date');
             $table->time('scheduled_time');
-            $table->enum('status', ['pending', 'published', 'blocked'])->default('pending');
+            $table->enum('status', ['pending', 'published', 'blocked', 'contracted', 'completed', 'cancelled'])->default('pending');
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });
@@ -195,6 +195,11 @@ return new class extends Migration {
             $table->text('failed_reason')->nullable();
             $table->timestamp('ended_at')->nullable();
             $table->timestamps();
+        });
+
+        Schema::create('job_contract_worker_progress', function (Blueprint $blueprint) {
+            $table->id();
+            $table->
         });
 
         Schema::create('app_reviews', function (Blueprint $table) {

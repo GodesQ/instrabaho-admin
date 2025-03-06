@@ -21,8 +21,8 @@ function showToastErrorMessage(message) {
         position: "center", // `left`, `center` or `right`
         stopOnFocus: true, // Prevents dismissing of toast on hover
         style: {
-            background: "linear-gradient(to right, #fd3c3d, #e83029)",
-            boxShadow: "0 3px 6px -1px #fd3c3d, 0 6px 20px -4px #e83029",
+            background: "linear-gradient(to right, #7d0e19, #7d0e19)",
+            boxShadow: "0 3px 6px -1px #7d0e19, 0 6px 0px -4px #7d0e19",
         },
     }).showToast();
 }
@@ -118,10 +118,7 @@ const handleFieldsError = (errors) => {
             .css({ display: "block" })
             .text(errors[property][0]);
 
-        field
-            .closest(".form-group")
-            .find(".choices")
-            .addClass("border border-danger rounded");
+        field.closest(".form-group").find(".choices").addClass("border border-danger rounded");
 
         if (property == "identification_file") {
             $(`[name="identification_filename"]`)

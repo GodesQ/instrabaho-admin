@@ -35,6 +35,7 @@
 
 @if (Session::get('fail'))
     <script>
+
         Toastify({
             text: "{{ Session::get('fail') }}",
             duration: 3000,
@@ -43,7 +44,8 @@
             position: "center", // `left`, `center` or `right`
             stopOnFocus: true, // Prevents dismissing of toast on hover
             style: {
-                background: "linear-gradient(to right, #fd3c3d, #e83029)",
+                background: "linear-gradient(to right, #7d0e19, #7d0e19)",
+                boxShadow: "0 3px 6px -1px #7d0e19, 0 6px 0px -4px #7d0e19",
             },
         }).showToast();
     </script>

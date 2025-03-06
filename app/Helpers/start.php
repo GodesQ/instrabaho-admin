@@ -14,3 +14,10 @@ if (!function_exists('formatSizeUnits')) {
         }
     }
 }
+
+if (!function_exists('generateContractCodeNumber')) {
+    function generateContractCodeNumber()
+    {
+        return "INS-CTX-" . rand(10000, 100000) . "-" . date('d-m-y');
+    }
+}
