@@ -184,7 +184,7 @@ return new class extends Migration {
         Schema::create('job_contracts', function (Blueprint $table) {
             $table->id();
             $table->string('contract_code_number', 50);
-            $table->foreignId('transaction_id')->constrained('transactions')->onDelete('cascade');
+            $table->foreignId('transaction_id')->nullable()->constrained('transactions')->nullOnDelete();
             $table->foreignId('proposal_id')->constrained('job_proposals')->onDelete('cascade');
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
             $table->foreignId('worker_id')->constrained('workers')->onDelete('cascade');

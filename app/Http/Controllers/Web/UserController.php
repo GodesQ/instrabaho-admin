@@ -39,7 +39,6 @@ class UserController extends Controller
                         }
                     }
 
-
                     $output .= "</div>";
 
                     return $output;

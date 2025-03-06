@@ -68,7 +68,10 @@ class JobPostController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $jobPost = JobPost::findOrFail($id);
+        $jobServices = JobService::get();
+        $clients = Client::with('user')->get();
+        return view('pages.job-posts.show-job-post', compact('jobPost', 'jobServices', 'clients'));
     }
 
     /**

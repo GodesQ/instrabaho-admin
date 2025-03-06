@@ -18,4 +18,14 @@ class JobProposal extends Model
         'longitude',
         'status',
     ];
+
+    public function job_post()
+    {
+        return $this->belongsTo(JobPost::class, 'job_post_id');
+    }
+
+    public function worker()
+    {
+        return $this->belongsTo(Worker::class, 'worker_id');
+    }
 }

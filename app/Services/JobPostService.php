@@ -45,17 +45,17 @@ class JobPostService
             })
             ->addColumn('action', function ($row) {
                 return '<ul class="list-inline hstack gap-1 mb-0">
-                        <li class="list-inline-item edit" title="Edit">
-                            <a href="' . route('job-services.edit', $row->id) . '"  class="text-primary d-inline-block edit-item-btn">
-                                <i class="ri-pencil-fill fs-16"></i>
-                            </a>
-                        </li>
-                        <li class="list-inline-item" title="Remove">
-                            <button class="text-danger btn d-inline-block remove-item-btn" id="' . $row->id . '">
-                                <i class="ri-delete-bin-5-fill fs-16"></i>
-                            </button>
-                        </li>
-                    </ul>';
+                            <li class="list-inline-item edit" title="Show">
+                                <a href="' . route('job-posts.show', $row->id) . '"  class="text-primary d-inline-block edit-item-btn">
+                                    <i class="ri-file-text-line fs-16"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item" title="Remove">
+                                <button class="text-danger btn d-inline-block remove-item-btn" id="' . $row->id . '">
+                                    <i class="ri-delete-bin-5-fill fs-16"></i>
+                                </button>
+                            </li>
+                        </ul>';
             })
             ->rawColumns(['action', 'status'])
             ->make(true);
@@ -64,6 +64,7 @@ class JobPostService
     public function store($request)
     {
         try {
+            // dd($request->all());
             DB::beginTransaction();
 
             $job_post_data = $request->only(

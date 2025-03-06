@@ -125,8 +125,7 @@
                                                     <div class="input-group">
                                                         <span class="input-group-text">@</span>
                                                         <input type="text" class="form-control" id="username-field"
-                                                            maxlength="20" placeholder="Username"
-                                                            name="username">
+                                                            maxlength="20" placeholder="Username" name="username">
                                                         <div class="invalid-feedback"></div>
                                                     </div>
                                                 </div>
@@ -314,7 +313,7 @@
                                             data-previous="v-pills-profile-info-tab"><i
                                                 class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>
                                             Back to Profile Info</button>
-                                            <button type="submit" id="submit-worker-btn"
+                                        <button type="submit" id="submit-worker-btn"
                                             class="btn btn-success btn-label right ms-auto nexttab nexttab"
                                             data-nexttab="#"><i
                                                 class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>

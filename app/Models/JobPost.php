@@ -35,4 +35,19 @@ class JobPost extends Model
     {
         return $this->belongsTo(Client::class, "creator_id");
     }
+
+    public function job_post_attachments()
+    {
+        return $this->hasMany(JobAttachment::class, "job_post_id");
+    }
+
+    public function ranked_workers()
+    {
+        return $this->hasMany(JobRankedWorker::class, "job_post_id");
+    }
+
+    public function proposals()
+    {
+        return $this->hasMany(JobProposal::class, "job_post_id");
+    }
 }

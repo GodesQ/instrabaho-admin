@@ -10,6 +10,7 @@ use App\Models\JobService;
 use App\Models\Service;
 use App\Models\User;
 use App\Models\UserProfile;
+use App\Models\Worker;
 use App\Models\WorkerCertificate;
 use App\Models\WorkerDetail;
 use App\Models\WorkerService;
@@ -108,9 +109,19 @@ class WorkerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
-        //
+        $worker = Worker::with('user')->find($id);
+
+        if (!$worker) {
+            return $request->expectsJson() || $request->ajax()
+                ? response()->json(['status' => false, 'message' => 'Worker Not Found'], 404)
+                : back()->with('fail', 'Worker Not Found');
+        }
+
+        return $request->expectsJson() || $request->ajax()
+            ? response()->json(['status' => true, 'worker' => $worker])
+            : $worker;
     }
 
     /**
@@ -156,6 +167,14 @@ class WorkerController extends Controller
         $worker = User::where('id', $id)->whereHas('roles.role', function ($query) {
             $query->where('name', User::ROLE['WORKER']);
         })->first();
+
+    }
+
+    public function search(Request $request)
+    {
+        $id = $request->id;
+        $email = $request->query('email');
+
 
     }
 }

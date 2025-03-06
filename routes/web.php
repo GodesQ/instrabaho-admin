@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\ClientController;
+use App\Http\Controllers\Web\JobContractController;
 use App\Http\Controllers\Web\JobPostController;
+use App\Http\Controllers\Web\JobProposalController;
 use App\Http\Controllers\Web\JobServiceController;
 use App\Http\Controllers\Web\ServiceCategoryController;
 use App\Http\Controllers\Web\UserController;
@@ -24,8 +26,10 @@ Route::group(['middleware' => ['auth']], function () {
     })->name('dashboard');
 
     Route::resource('users', UserController::class);
+    // Route::get('users/search', [UserControll]);
 
     Route::resource('workers', WorkerController::class)->except(['index', 'destroy']);
+    // Route::get('workers/search/{worker_id?}', [WorkerController::class, 'search'])->name('workers.search');
 
     Route::resource('customers', ClientController::class)->except(['index', 'destroy']);
 
@@ -34,4 +38,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('job-services', JobServiceController::class);
 
     Route::resource('job-posts', JobPostController::class);
+
+    Route::resource('job-proposals', JobProposalController::class);
+
+    Route::resource('job-contracts', JobContractController::class);
 });
