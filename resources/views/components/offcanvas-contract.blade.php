@@ -58,7 +58,8 @@
                 <div class="border-top py-3">
                     <div class="form-group">
                         <div class="form-check form-check-outline form-check-primary mb-3">
-                            <input class="form-check-input" type="checkbox" id="formCheck15"  name="approved_terms_conditions">
+                            <input class="form-check-input" type="checkbox" id="formCheck15"
+                                name="approved_terms_conditions">
                             <label class="form-check-label" for="formCheck15">
                                 Agree on <a href="#" class="text-primary">Terms & Conditions</a>
                             </label>
@@ -84,35 +85,57 @@
             let submitContractBtn = document.getElementById('submit-contract-btn');
 
             handleRemoveFieldsError();
-
-            $.ajax({
-                url: '{{ route('job-contracts.store') }}',
-                method: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    submitContractBtn.disabled = true;
-                },
-                success: function(data) {
+            axios.post('{{ route('job-contracts.store') }}', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                })
+                .then(response => {
                     submitContractBtn.removeAttribute("disabled");
                     showToastSuccessMessage("Contract created successfully!");
                     setTimeout(() => {
-                        console.log(data);
-                        // location.reload();
+                        console.log(response.data);
                     }, 1500);
-                },
-                error: function(xhr, textStatus, errorThrown) {
-                    if (xhr.status === 422) {
-                        const errors = xhr.responseJSON.errors;
+                })
+                .catch(error => {
+                    if (error.response && error.response.status === 422) {
+                        const errors = error.response.data.errors;
                         handleFieldsError(errors);
                     }
-                    showToastErrorMessage((xhr?.responseJSON?.message ??
-                        "Submission Failed. Please try again later."));
+                    showToastErrorMessage(error.response?.data?.message ??
+                        "Submission Failed. Please try again later.");
 
                     submitContractBtn.removeAttribute("disabled");
-                }
-            })
+                });
+
+            // $.ajax({
+            //     url: '{{ route('job-contracts.store') }}',
+            //     method: 'POST',
+            //     data: formData,
+            //     contentType: false,
+            //     processData: false,
+            //     beforeSend: function() {
+            //         submitContractBtn.disabled = true;
+            //     },
+            //     success: function(data) {
+            //         submitContractBtn.removeAttribute("disabled");
+            //         showToastSuccessMessage("Contract created successfully!");
+            //         setTimeout(() => {
+            //             console.log(data);
+            //             // location.reload();
+            //         }, 1500);
+            //     },
+            //     error: function(xhr, textStatus, errorThrown) {
+            //         if (xhr.status === 422) {
+            //             const errors = xhr.responseJSON.errors;
+            //             handleFieldsError(errors);
+            //         }
+            //         showToastErrorMessage((xhr?.responseJSON?.message ??
+            //             "Submission Failed. Please try again later."));
+
+            //         submitContractBtn.removeAttribute("disabled");
+            //     }
+            // })
         });
     </script>
 @endpush

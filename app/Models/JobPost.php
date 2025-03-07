@@ -26,6 +26,14 @@ class JobPost extends Model
         "published_at",
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'published_at' => 'datetime',
+            'withdraw_amount' => 'double',
+        ];
+    }
+
     public function job_service()
     {
         return $this->belongsTo(JobService::class, "service_id");

@@ -19,5 +19,16 @@ class JobContract extends Model
         'status',
         'failed_reason',
         'ended_at',
+        'worker_progress',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'ended_at' => 'datetime',
+            'is_client_approved' => 'boolean',
+            'is_worker_approved' => 'boolean',
+            'contract_amount' => 'double',
+        ];
+    }
 }

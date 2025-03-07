@@ -24,6 +24,16 @@ class Worker extends Model
         'is_verified_worker',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'age' => 'integer',
+            'birthdate' => 'date',
+            'is_verified_worker' => 'boolean',
+            'hourly_rate' => 'datetime',
+        ];
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

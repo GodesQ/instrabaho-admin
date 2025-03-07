@@ -17,4 +17,24 @@ class UserWalletLog extends Model
         "deposit_at",
         "withdraw_at"
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'double',
+            'metadata' => 'array',
+            'deposit_at' => 'datetime',
+            'withdraw_at' => 'datetime',
+        ];
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function user_wallet()
+    {
+        return $this->belongsTo(UserWallet::class, 'user_wallet_id');
+    }
 }

@@ -194,12 +194,20 @@ return new class extends Migration {
             $table->enum('status', ['in_progress', 'cancelled', 'reported', 'success', 'failed']);
             $table->text('failed_reason')->nullable();
             $table->timestamp('ended_at')->nullable();
+            $table->enum('worker_progress', ['preparing', 'on_way', 'arriving', 'arrived', 'working', 'done', 'cancelled']);
             $table->timestamps();
         });
 
-        Schema::create('job_contract_worker_progress', function (Blueprint $blueprint) {
+        Schema::create('contract_worker_progress_logs', function (Blueprint $table) {
             $table->id();
-            $table->
+            $table->foreignId('contract_id')->constrained('job_contracts')->onDelete('cascade');
+            $table->foreignId('worker_id')->constrained('workers')->onDelete('cascade');
+            $table->enum('status', ['preparing', 'on_way', 'arriving', 'arrived', 'working', 'done', 'cancelled']);
+            $table->string('comment')->nullable();
+            $table->timestamp('arrived_at')->nullable();
+            $table->timestamp('started_working_at')->nullable();
+            $table->timestamp('finished_working_at')->nullable();
+            $table->timestamps();
         });
 
         Schema::create('app_reviews', function (Blueprint $table) {

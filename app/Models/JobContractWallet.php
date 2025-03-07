@@ -14,4 +14,13 @@ class JobContractWallet extends Model
         "withdraw_amount",
         "contract_withdraw_at",
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'contract_withdraw_at' => 'datetime',
+            'withdraw_amount' => 'double',
+            'amount' => 'double',
+        ];
+    }
 }

@@ -15,6 +15,7 @@ class JobService extends Model
         "status"
     ];
 
+
     public function scopeActive($q)
     {
         return $q->where('status', 'active');
