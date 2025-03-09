@@ -30,7 +30,7 @@ class Worker extends Model
             'age' => 'integer',
             'birthdate' => 'date',
             'is_verified_worker' => 'boolean',
-            'hourly_rate' => 'datetime',
+            'hourly_rate' => 'double',
         ];
     }
 

@@ -14,6 +14,8 @@ class JobContract extends Model
         'client_id',
         'worker_id',
         'contract_amount',
+        'client_service_fee',
+        'total_amount',
         'is_client_approved',
         'is_worker_approved',
         'status',
@@ -29,6 +31,22 @@ class JobContract extends Model
             'is_client_approved' => 'boolean',
             'is_worker_approved' => 'boolean',
             'contract_amount' => 'double',
+            'client_service_fee' => 'double',
+            'total_amount' => 'double',
         ];
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_id');
+    }
+    public function worker()
+    {
+        return $this->belongsTo(Worker::class, 'worker_id');
+    }
+
+    public function contract_worker_progresses()
+    {
+        return $this->hasMany(ContractWorkerProgressLog::class, 'contract_id');
     }
 }

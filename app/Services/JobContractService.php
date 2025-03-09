@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enum\JobPostStatusEnum;
 use App\Enum\JobProposalStatusEnum;
+use App\Models\Client;
 use Exception;
 use App\Enum\JobContractStatusEnum;
 use App\Models\JobContract;
@@ -26,10 +27,9 @@ class JobContractService
             $contractCodeNumber = generateContractCodeNumber();
 
             $jobProposal = JobProposal::find($request->proposal_id);
+            $jobPostStatus = $jobProposal->job_post->status;
 
-            if ($jobProposal->job_post->status !== JobPostStatusEnum::PUBLISHED) {
-                throw new Exception("This job can't create a contract due to an invalid status.", 400);
-            }
+            $this->ensureJobCanBeContracted($jobPostStatus);
 
             $jobContract = JobContract::create([
                 'contract_code_number' => $contractCodeNumber,
@@ -46,7 +46,6 @@ class JobContractService
                 "contract_id" => $jobContract->id,
                 "amount" => $jobContract->contract_amount,
                 "withdraw_amount" => 0,
-                "contract_withdraw_at" => 0,
             ]);
 
             $jobProposal->update([
@@ -64,6 +63,18 @@ class JobContractService
         } catch (Exception $exception) {
             DB::rollBack();
             throw $exception;
+        }
+    }
+
+    private function ensureJobCanBeContracted($jobPostStatus)
+    {
+        if ($jobPostStatus !== JobPostStatusEnum::PUBLISHED) {
+            $message = $jobPostStatus === JobPostStatusEnum::CONTRACTED ? (
+                "This job already have a contract. You can't perform this action."
+            ) : (
+                "This job can't create a contract due to an invalid status."
+            );
+            throw new Exception($message, 400);
         }
     }
 }

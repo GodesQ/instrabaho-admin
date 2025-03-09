@@ -56,4 +56,9 @@ class User extends Authenticatable
     {
         return auth()->user()->hasRole('super admin');
     }
+
+    public function user_wallet()
+    {
+        return $this->hasOne(UserWallet::class, 'user_id');
+    }
 }

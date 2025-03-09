@@ -7,7 +7,7 @@
 
         <div data-simplebar style="height: calc(100vh - 112px);">
             <p>This section allows job contracts to be proposed before finalization, enabling clients and workers to
-                review, negotiate, and agree on terms before acceptance.</p>
+                review and agree on terms before acceptance.</p>
             <form action="{{ route('job-contracts.store') }}" method="post" id="contract-form">
                 @csrf
                 <input type="hidden" name="proposal_id" id="proposal-id-field" value="{{ $jobProposal->id }}">
@@ -20,9 +20,39 @@
                             <div class="input-group">
                                 <span class="input-group-text">₱</span>
                                 <input type="number" class="form-control" id="offer-amount-field" placeholder="0.00"
-                                    name="contract_amount">
+                                    name="contract_amount" id="contract-amount-field"
+                                    value="{{ $jobProposal->offer_amount }}">
                                 <div class="invalid-feedback"></div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="border border-dashed p-2 mb-3">
+                            <h5>Payment Summary</h5>
+                            <table class="table table-borderless mb-0">
+                                <tbody>
+                                    <tr>
+                                        <td>Service Fee Percentage:</td>
+                                        <td>5%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sub Amount:</td>
+                                        <td>
+                                            ₱ <span id="contract-amount-text">{{ $jobProposal->offer_amount }}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Service Fee Amount:</td>
+                                        <td>
+                                            ₱ <span id="service-fee-text">0</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Amount:</td>
+                                        <td>₱ <span id="total-amount-text"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div class="col-lg-12">
@@ -71,31 +101,50 @@
             </form>
         </div>
     </div>
-    <div class="offcanvas-foorter border p-3 text-center">
-        {{-- <a href="javascript:void(0);" class="link-success">View All Acitivity <i
-                                            class="ri-arrow-right-s-line align-middle ms-1"></i></a> --}}
-    </div>
 </div>
 
 @push('scripts')
     <script>
+        $("#contract-amount-field").on('input', (e) => {
+            $("#contract-amount-text").text(e.target.value);
+        })
+
+        const computeContractAmount = () => {
+            let contractAmountField = document.querySelector('#contract-amount-field');
+            let processingFeeText = document.querySelector('#contract-amount-text');
+            let totalAmountText = document.querySelector('#total-amount-text');
+
+            let processingFeePercent = .05; // 5%
+
+
+
+        }
+
         $('#contract-form').submit(function(e) {
             e.preventDefault();
             let formData = new FormData(e.target);
+            let url = e.target.getAttribute('action');
             let submitContractBtn = document.getElementById('submit-contract-btn');
 
             handleRemoveFieldsError();
-            axios.post('{{ route('job-contracts.store') }}', formData, {
+            axios.post(url, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     },
                 })
                 .then(response => {
+                    let {
+                        job_contract,
+                        url
+                    } = response.data;
+
                     submitContractBtn.removeAttribute("disabled");
-                    showToastSuccessMessage("Contract created successfully!");
+                    showToastSuccessMessage(
+                        `Contract - ${job_contract.contract_code_number} created successfully!`
+                    );
                     setTimeout(() => {
-                        console.log(response.data);
-                    }, 1500);
+                        location.href = url;
+                    }, 1000);
                 })
                 .catch(error => {
                     if (error.response && error.response.status === 422) {
@@ -107,35 +156,6 @@
 
                     submitContractBtn.removeAttribute("disabled");
                 });
-
-            // $.ajax({
-            //     url: '{{ route('job-contracts.store') }}',
-            //     method: 'POST',
-            //     data: formData,
-            //     contentType: false,
-            //     processData: false,
-            //     beforeSend: function() {
-            //         submitContractBtn.disabled = true;
-            //     },
-            //     success: function(data) {
-            //         submitContractBtn.removeAttribute("disabled");
-            //         showToastSuccessMessage("Contract created successfully!");
-            //         setTimeout(() => {
-            //             console.log(data);
-            //             // location.reload();
-            //         }, 1500);
-            //     },
-            //     error: function(xhr, textStatus, errorThrown) {
-            //         if (xhr.status === 422) {
-            //             const errors = xhr.responseJSON.errors;
-            //             handleFieldsError(errors);
-            //         }
-            //         showToastErrorMessage((xhr?.responseJSON?.message ??
-            //             "Submission Failed. Please try again later."));
-
-            //         submitContractBtn.removeAttribute("disabled");
-            //     }
-            // })
         });
     </script>
 @endpush

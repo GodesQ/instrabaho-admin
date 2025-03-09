@@ -112,7 +112,7 @@
                     showToastSuccessMessage("Proposal submitted successfully!");
                     setTimeout(() => {
                         location.reload();
-                    }, 1500);
+                    }, 1000);
                 },
                 error: function(xhr, textStatus, errorThrown) {
                     if (xhr.status === 422) {

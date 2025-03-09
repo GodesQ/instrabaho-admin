@@ -44,7 +44,7 @@ class UserSeeder extends Seeder
 
         $worker = Worker::create([
             'user_id' => $userWorker->id,
-            'hourly_rate' => 700,
+            'hourly_rate' => 700.00,
             'country_code' => 63,
             'contact_number' => 9633987953,
             'gender' => 'Male',

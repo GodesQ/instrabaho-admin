@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\ClientController;
+use App\Http\Controllers\Web\ContractWorkerProgressController;
 use App\Http\Controllers\Web\JobContractController;
 use App\Http\Controllers\Web\JobPostController;
 use App\Http\Controllers\Web\JobProposalController;
@@ -42,4 +43,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('job-proposals', JobProposalController::class);
 
     Route::resource('job-contracts', JobContractController::class);
+
+    Route::resource('job-contract-worker-progresses', ContractWorkerProgressController::class);
 });

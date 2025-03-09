@@ -3,23 +3,14 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\JobContract\StoreRequest;
-
-use App\Models\JobContract;
+use App\Http\Requests\ContractWorkerProgress\StoreRequest;
+use App\Models\ContractWorkerProgressLog;
 use App\Services\Handlers\ExceptionHandlerService;
-use App\Services\JobContractService;
 use Exception;
 use Illuminate\Http\Request;
 
-class JobContractController extends Controller
+class ContractWorkerProgressController extends Controller
 {
-    protected $jobContractService;
-
-    public function __construct(JobContractService $jobContractService)
-    {
-        $this->jobContractService = $jobContractService;
-    }
-
     /**
      * Display a listing of the resource.
      */
@@ -42,20 +33,24 @@ class JobContractController extends Controller
     public function store(StoreRequest $request)
     {
         try {
-            $jobContract = $this->jobContractService->store($request);
+            $data = $request->validated();
 
-            return $request->expectsJson() || $request->ajax()
-                ? response()->json([
-                    'status' => true,
-                    'message' => "Job Contract Created Successfully.",
-                    'url' => route('job-contracts.show', $jobContract->id),
-                    'job_contract' => $jobContract
-                ], 201)
-                : redirect()->route('job-contracts.show', $jobContract->id)->with('success', 'Job Contract Created Successfully.');
+            $progressLog = ContractWorkerProgressLog::create($data);
+
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json([
+                    "status" => true,
+                    "message" => "Progress Added Successfully",
+                ]);
+            }
+
+            return redirect()->route('job-contract-worker-progresses.index')
+                ->withSuccess("Progress Added Successfully");
+
 
         } catch (Exception $exception) {
             $exceptionHandler = new ExceptionHandlerService;
-            return $exceptionHandler->handler($request, $exception);
+            $exceptionHandler->handler($request, $exception);
         }
     }
 
@@ -64,8 +59,7 @@ class JobContractController extends Controller
      */
     public function show(string $id)
     {
-        $jobContract = JobContract::findOrFail($id);
-        return view('pages.job-contracts.show-job-contract', compact('jobContract'));
+        //
     }
 
     /**

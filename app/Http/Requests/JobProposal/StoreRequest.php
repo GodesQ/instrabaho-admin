@@ -25,7 +25,7 @@ class StoreRequest extends FormRequest
             'worker_id' => ['required', 'exists:workers,id'],
             'job_post_id' => ['required', 'exists:job_posts,id'],
             'offer_amount' => ['required', 'numeric'],
-            'details' => ['nullable'],
+            'details' => ['nullable', 'max:250'],
             'address' => ['required'],
             'latitude' => ['required'],
             'longitude' => ['required'],

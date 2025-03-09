@@ -47,7 +47,11 @@ class ExceptionHandlerService
     private function getExceptionCode(Exception $exception)
     {
         $exception_code = $exception->getCode();
-        return empty($exception_code) || !is_numeric($exception_code) ? 500 : (int) $exception_code;
+
+        // Ensure the code is numeric and within valid HTTP status codes (100-599)
+        return is_numeric($exception_code) && $exception_code >= 100 && $exception_code <= 599
+            ? (int) $exception_code
+            : 500;
     }
 
     private static function serverErrorMessage()

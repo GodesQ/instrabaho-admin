@@ -78,7 +78,7 @@ return new class extends Migration {
         Schema::create('workers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->double('hourly_rate')->default(0);
+            $table->double('hourly_rate')->nullable()->default(0);
             $table->integer('country_code');
             $table->string('contact_number', 20);
             $table->enum('gender', ['Male', 'Female']);
@@ -188,7 +188,10 @@ return new class extends Migration {
             $table->foreignId('proposal_id')->constrained('job_proposals')->onDelete('cascade');
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
             $table->foreignId('worker_id')->constrained('workers')->onDelete('cascade');
-            $table->double('contract_amount');
+            $table->double('contract_amount')->default(0);
+            $table->double('client_service_fee')->default(0);
+            $table->double('contract_total_amount')->default(0);
+            $table->double('metadata')->default(0);
             $table->boolean('is_client_approved')->default(0);
             $table->boolean('is_worker_approved')->default(0);
             $table->enum('status', ['in_progress', 'cancelled', 'reported', 'success', 'failed']);
