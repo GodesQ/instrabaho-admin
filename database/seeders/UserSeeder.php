@@ -30,7 +30,8 @@ class UserSeeder extends Seeder
             'email' => 'james@godesq.com',
             'password' => Hash::make('Test123!'),
             'email_verified_at' => Carbon::now(),
-            'status' => 'active'
+            'status' => 'active',
+            'user_role_type' => 'user'
         ]);
 
         $userWorker->syncRoles([RoleEnum::WORKER]);
@@ -54,6 +55,7 @@ class UserSeeder extends Seeder
             'latitude' => '14.721612',
             'longitude' => '121.144247',
             'identification_filename' => 'james_worker.jpg',
+            'nbi_copy_filename' => 'james_worker.jpg',
             'is_verified_worker' => true,
         ]);
 
@@ -72,7 +74,8 @@ class UserSeeder extends Seeder
             'email' => 'jamesgarnfil15@gmail.com',
             'password' => Hash::make('Test123!'),
             'email_verified_at' => Carbon::now(),
-            'status' => 'active'
+            'status' => 'active',
+            'user_role_type' => 'user'
         ]);
 
         $userClient->syncRoles([RoleEnum::CLIENT]);

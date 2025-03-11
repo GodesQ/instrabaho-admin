@@ -21,6 +21,7 @@ class Worker extends Model
         'latitude',
         'longitude',
         'identification_filename',
+        'nbi_copy_filename',
         'is_verified_worker',
     ];
 

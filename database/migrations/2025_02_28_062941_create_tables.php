@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('first_name', 50);
             $table->string('middle_name', 50)->nullable();
             $table->string('last_name', 50);
+            $table->string('profile_photo')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->enum('status', ['active', 'inactive', 'blocked'])->default('active');
             $table->string('remember_token', 100)->nullable();
@@ -88,7 +89,8 @@ return new class extends Migration {
             $table->string('address', 120);
             $table->string('latitude', 100);
             $table->string('longitude', 100);
-            $table->string('identification_filename', 250);
+            $table->string('identification_filename', 250)->nullable();
+            $table->string('nbi_copy_filename', 250)->nullable();
             $table->boolean('is_verified_worker')->default(0);
             $table->timestamps();
         });
