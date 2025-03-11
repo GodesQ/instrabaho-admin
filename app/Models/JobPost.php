@@ -10,11 +10,11 @@ class JobPost extends Model
 
     protected $fillable = [
         "creator_id",
+        "service_id",
         "title",
         "description",
         "notes",
         "transaction_type",
-        "price_amount",
         "job_duration",
         "address",
         "latitude",
@@ -25,4 +25,37 @@ class JobPost extends Model
         "status",
         "published_at",
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'published_at' => 'datetime',
+            'withdraw_amount' => 'double',
+        ];
+    }
+
+    public function job_service()
+    {
+        return $this->belongsTo(JobService::class, "service_id");
+    }
+
+    public function job_creator()
+    {
+        return $this->belongsTo(Client::class, "creator_id");
+    }
+
+    public function job_post_attachments()
+    {
+        return $this->hasMany(JobAttachment::class, "job_post_id");
+    }
+
+    public function ranked_workers()
+    {
+        return $this->hasMany(JobRankedWorker::class, "job_post_id");
+    }
+
+    public function proposals()
+    {
+        return $this->hasMany(JobProposal::class, "job_post_id");
+    }
 }

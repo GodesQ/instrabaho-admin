@@ -18,4 +18,21 @@ class JobProposal extends Model
         'longitude',
         'status',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'offer_amount' => 'double',
+        ];
+    }
+
+    public function job_post()
+    {
+        return $this->belongsTo(JobPost::class, 'job_post_id');
+    }
+
+    public function worker()
+    {
+        return $this->belongsTo(Worker::class, 'worker_id');
+    }
 }

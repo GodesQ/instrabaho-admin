@@ -51,4 +51,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function isSuperAdmin()
+    {
+        return auth()->user()->hasRole('super admin');
+    }
+
+    public function user_wallet()
+    {
+        return $this->hasOne(UserWallet::class, 'user_id');
+    }
 }

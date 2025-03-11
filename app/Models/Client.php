@@ -17,4 +17,9 @@ class Client extends Model
         "longitude",
         "facebook_url"
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

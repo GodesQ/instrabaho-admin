@@ -48,9 +48,10 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        Schema::create('wallet_logs', function (Blueprint $table) {
+        Schema::create('user_wallet_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_wallet_id')->constrained('users_wallets')->onDelete('cascade');
             $table->double('amount')->default(0);
             $table->enum('transfer_type', ['withdraw', 'deposit']);
             $table->json('metadata')->nullable();
@@ -70,13 +71,14 @@ return new class extends Migration {
             $table->foreignId('category_id')->constrained('service_categories')->onDelete('cascade');
             $table->string('title', 150);
             $table->text('description')->nullable();
+            $table->enum('status', ['active', 'inactive']);
             $table->timestamps();
         });
 
         Schema::create('workers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->double('hourly_rate')->default(0);
+            $table->double('hourly_rate')->nullable()->default(0);
             $table->integer('country_code');
             $table->string('contact_number', 20);
             $table->enum('gender', ['Male', 'Female']);
@@ -84,7 +86,7 @@ return new class extends Migration {
             $table->integer('age')->nullable();
             $table->date('birthdate')->nullable();
             $table->string('address', 120);
-            $table->string('latitute', 100);
+            $table->string('latitude', 100);
             $table->string('longitude', 100);
             $table->string('identification_filename', 250);
             $table->boolean('is_verified_worker')->default(0);
@@ -112,7 +114,7 @@ return new class extends Migration {
             $table->integer('country_code');
             $table->string('contact_number', 20);
             $table->string('address', 100);
-            $table->string('latitute', 100);
+            $table->string('latitude', 100);
             $table->string('longitude', 100);
             $table->string('facebook_url', 100)->nullable();
             $table->timestamps();
@@ -121,20 +123,49 @@ return new class extends Migration {
         Schema::create('job_posts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('creator_id')->constrained('clients')->onDelete('cascade');
+            $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
             $table->string('title', 150);
             $table->string('description', 150);
             $table->text('notes')->nullable();
             $table->enum('transaction_type', ['fixed', 'hourly'])->default('fixed');
-            $table->double('price_amount')->default(0);
             $table->string('job_duration', 100)->nullable();
             $table->string('address', 250);
-            $table->string('latitute', 100);
+            $table->string('latitude', 100);
             $table->string('longitude', 100);
             $table->enum('urgency', ['book_now', 'scheduled']);
             $table->date('scheduled_date');
             $table->time('scheduled_time');
-            $table->enum('status', ['pending', 'published', 'blocked'])->default('pending');
+            $table->enum('status', ['pending', 'published', 'blocked', 'contracted', 'completed', 'cancelled'])->default('pending');
             $table->timestamp('published_at')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('job_post_attachments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('job_post_id')->constrained('job_posts')->cascadeOnDelete();
+            $table->string('attachment_filename');
+            $table->timestamps();
+        });
+
+        Schema::create('job_ranked_workers', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('job_post_id')->constrained('job_posts')->cascadeOnDelete();
+            $table->foreignId('worker_id')->constrained('workers')->cascadeOnDelete();
+            $table->double('total_score')->default(0);
+            $table->json('metadata')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('job_proposals', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('worker_id')->constrained('workers')->onDelete('cascade');
+            $table->foreignId('job_post_id')->constrained('job_posts')->onDelete('cascade');
+            $table->double('offer_amount')->default(0);
+            $table->string('details', 250)->nullable();
+            $table->string('address', 150);
+            $table->string('latitude', 100);
+            $table->string('longitude', 100);
+            $table->enum('status', ['draft', 'submitted', 'approved', 'cancelled'])->default('draft');
             $table->timestamps();
         });
 
@@ -147,6 +178,76 @@ return new class extends Migration {
             $table->double('total_amount')->default(0);
             $table->string('payment_method', 100);
             $table->enum('status', ['paid', 'unpaid'])->default('unpaid');
+            $table->timestamps();
+        });
+
+        Schema::create('job_contracts', function (Blueprint $table) {
+            $table->id();
+            $table->string('contract_code_number', 50);
+            $table->foreignId('transaction_id')->nullable()->constrained('transactions')->nullOnDelete();
+            $table->foreignId('proposal_id')->constrained('job_proposals')->onDelete('cascade');
+            $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
+            $table->foreignId('worker_id')->constrained('workers')->onDelete('cascade');
+            $table->double('contract_amount')->default(0);
+            $table->double('client_service_fee')->default(0);
+            $table->double('contract_total_amount')->default(0);
+            $table->double('metadata')->default(0);
+            $table->boolean('is_client_approved')->default(0);
+            $table->boolean('is_worker_approved')->default(0);
+            $table->enum('status', ['in_progress', 'cancelled', 'reported', 'success', 'failed']);
+            $table->text('failed_reason')->nullable();
+            $table->timestamp('ended_at')->nullable();
+            $table->enum('worker_progress', ['preparing', 'on_way', 'arriving', 'arrived', 'working', 'done', 'cancelled']);
+            $table->timestamps();
+        });
+
+        Schema::create('contract_worker_progress_logs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('contract_id')->constrained('job_contracts')->onDelete('cascade');
+            $table->foreignId('worker_id')->constrained('workers')->onDelete('cascade');
+            $table->enum('status', ['preparing', 'on_way', 'arriving', 'arrived', 'working', 'done', 'cancelled']);
+            $table->string('comment')->nullable();
+            $table->timestamp('arrived_at')->nullable();
+            $table->timestamp('started_working_at')->nullable();
+            $table->timestamp('finished_working_at')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('app_reviews', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->text('feedback_message')->nullable();
+            $table->integer('rate');
+            $table->json('metadata')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('worker_reviews', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('reviewer_id')->constrained('clients')->onDelete('cascade');
+            $table->foreignId('worker_id')->constrained('workers')->onDelete('cascade');
+            $table->text('feedback_message');
+            $table->integer('rate');
+            $table->json('metadata')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('client_reviews', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('reviewer_id')->constrained('workers')->onDelete('cascade');
+            $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
+            $table->text('feedback_message');
+            $table->integer('rate');
+            $table->json('metadata')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('job_contract_wallets', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('contract_id')->constrained('job_contracts')->cascadeOnDelete();
+            $table->double('amount')->default(0);
+            $table->double('withdraw_amount')->default(0);
+            $table->timestamp('contract_withdraw_at')->nullable();
             $table->timestamps();
         });
     }
@@ -167,5 +268,10 @@ return new class extends Migration {
         Schema::dropIfExists('workers');
         Schema::dropIfExists('services');
         Schema::dropIfExists('service_categories');
+        Schema::dropIfExists('client_reviews');
+        Schema::dropIfExists('worker_reviews');
+        Schema::dropIfExists('app_reviews');
+        Schema::dropIfExists('job_contracts');
+        Schema::dropIfExists('job_proposals');
     }
 };

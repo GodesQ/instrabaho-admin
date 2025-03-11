@@ -14,4 +14,12 @@ class AppReview extends Model
         "metadata"
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'rate' => 'integer',
+            'metadata' => 'array',
+        ];
+    }
+
 }

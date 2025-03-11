@@ -13,4 +13,11 @@ class UserWallet extends Model
         "deposit_method",
         "withdraw_method",
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'balance' => 'double',
+        ];
+    }
 }

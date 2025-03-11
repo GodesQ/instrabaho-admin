@@ -11,4 +11,9 @@ class WorkerJobService extends Model
         "worker_id",
         "service_id"
     ];
+
+    public function job_service()
+    {
+        return $this->belongsTo(JobService::class, 'service_id');
+    }
 }

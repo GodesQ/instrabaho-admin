@@ -14,4 +14,12 @@ class ClientReview extends Model
         "rate",
         "metadata"
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'rate' => 'integer',
+            'metadata' => 'array',
+        ];
+    }
 }
