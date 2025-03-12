@@ -365,7 +365,7 @@
                 formData.append('certificate_file', certificateFiles[0].file);
             }
 
-            formData.delete("identification_filename");
+            formData.delete("identification_file");
             formData.delete("certificate_filename");
 
             let submitBtn = document.querySelector('#submit-worker-btn');

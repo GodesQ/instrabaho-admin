@@ -88,7 +88,7 @@ class JobPostService
                 'scheduled_time' => $request->urgency === 'scheduled' ? $request->scheduled_time : Carbon::now(),
             ]));
 
-            if ($request->has('job_attachments')) {
+            if ($request->has('job_attachments') && is_array($request->job_attachments)) {
                 foreach ($request->job_attachments as $key => $attachment) {
                     $filename = Str::random(5) . '_' . time() . '.' . $attachment->getClientOriginalExtension();
 
@@ -97,7 +97,7 @@ class JobPostService
 
                     JobAttachment::create([
                         'job_post_id' => $job_post->id,
-                        'attachment_filename' => $filename,
+                        'attachment_file' => $filename,
                     ]);
                 }
             }
@@ -109,7 +109,6 @@ class JobPostService
             return $job_post;
 
         } catch (Exception $exception) {
-            DB::rollBack();
             throw $exception;
         }
     }

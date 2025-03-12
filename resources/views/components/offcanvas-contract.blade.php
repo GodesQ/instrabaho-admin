@@ -19,9 +19,8 @@
                             <label for="contract-amount-field" class="form-label">Contract Amount</label>
                             <div class="input-group">
                                 <span class="input-group-text">₱</span>
-                                <input type="number" class="form-control" id="offer-amount-field" placeholder="0.00"
-                                    name="contract_amount" id="contract-amount-field"
-                                    value="{{ $jobProposal->offer_amount }}">
+                                <input type="number" class="form-control" placeholder="0.00" name="contract_amount"
+                                    id="contract-amount-field" value="{{ $jobProposal->offer_amount }}">
                                 <div class="invalid-feedback"></div>
                             </div>
                         </div>
@@ -107,18 +106,26 @@
     <script>
         $("#contract-amount-field").on('input', (e) => {
             $("#contract-amount-text").text(e.target.value);
+            computeContractAmount();
         })
 
         const computeContractAmount = () => {
             let contractAmountField = document.querySelector('#contract-amount-field');
-            let processingFeeText = document.querySelector('#contract-amount-text');
+            let serviceFeeText = document.querySelector('#service-fee-text');
             let totalAmountText = document.querySelector('#total-amount-text');
 
-            let processingFeePercent = .05; // 5%
+            let serviceFeePercent = .05; // 5%
+            let serviceFeeTotal = Number(contractAmountField.value * serviceFeePercent).toFixed(2);
+            let totalAmount = Number(contractAmountField.value) + Number(serviceFeeTotal);
 
-
-
+            serviceFeeText.textContent = serviceFeeTotal;
+            totalAmountText.textContent = Number(totalAmount).toFixed(2);
         }
+
+        var myOffcanvas = document.getElementById('offcanvasRight')
+        myOffcanvas.addEventListener('shown.bs.offcanvas', function() {
+            computeContractAmount();
+        })
 
         $('#contract-form').submit(function(e) {
             e.preventDefault();

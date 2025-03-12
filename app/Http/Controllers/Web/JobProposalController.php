@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\JobProposal\StoreRequest;
 use App\Models\JobProposal;
+use App\Models\JobRankedWorker;
 use App\Services\Handlers\ExceptionHandlerService;
 use Exception;
 use Illuminate\Http\Request;
@@ -35,6 +36,12 @@ class JobProposalController extends Controller
     {
         try {
             DB::beginTransaction();
+
+            // check if the worker is in the ranked workers on job post.
+            $rankedWorker = JobRankedWorker::where('worker_id', $request->worker_id)
+                ->where('job_post_id', $request->job_post_id)
+                ->exists();
+
             $data = $request->validated();
 
             $jobProposal = JobProposal::create($data);

@@ -22,14 +22,14 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'worker_id' => ['required', 'exists:workers,id'],
+            'worker_id' => ['required'],
             'job_post_id' => ['required', 'exists:job_posts,id'],
             'offer_amount' => ['required', 'numeric'],
             'details' => ['nullable', 'max:250'],
             'address' => ['required'],
             'latitude' => ['required'],
             'longitude' => ['required'],
-            'status' => ['required'],
+            'status' => ['required', 'in:submitted,approved,cancelled'],
         ];
     }
 

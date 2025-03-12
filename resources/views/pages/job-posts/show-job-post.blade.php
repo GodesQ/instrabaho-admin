@@ -184,7 +184,7 @@
                                             </div>
                                             <div class="flex-grow-1 overflow-hidden">
                                                 <h5 class="fs-15 mb-1"><a href="#"
-                                                        class="text-body text-truncate d-block">{{ $attachment->attachment_filename }}</a>
+                                                        class="text-body text-truncate d-block">{{ $attachment->attachment_file }}</a>
                                                 </h5>
                                                 <div>
                                                     @php
@@ -192,7 +192,7 @@
                                                             'job_posts/attachments/' .
                                                             $jobPost->id .
                                                             '/' .
-                                                            $attachment->attachment_filename;
+                                                            $attachment->attachment_file;
 
                                                         if (Storage::disk('public')->exists($path)) {
                                                             $size = Storage::disk('public')->size($path);
@@ -343,7 +343,7 @@
                                                         <li class="list-inline-item edit" title="Show">
                                                             <a href="{{ route('job-proposals.show', $proposal->id) }}"
                                                                 class="text-primary d-inline-block edit-item-btn">
-                                                                <i class="ri-edit-line fs-16"></i>
+                                                                <i class="ri-file-text-line fs-16"></i>
                                                             </a>
                                                         </li>
                                                         <li class="list-inline-item" title="Remove">

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\JobPostController;
+use App\Http\Controllers\API\JobProposalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,4 +16,21 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::post('workers/login', [AuthController::class, 'workerLogin']);
     Route::post('clients/login', [AuthController::class, 'clientLogin']);
+
+    Route::group(['middleware' => ['auth:sanctum']], function () {
+        Route::post('logout', [AuthController::class, 'logout']);
+
+        Route::post('job-posts', [JobPostController::class, 'store'])
+            ->middleware(['ability:job_post:store']);
+
+        Route::post('job-proposals', [JobProposalController::class, 'store'])
+            ->middleware(['ability:job_proposal:store']);
+
+        Route::get('workers/{worker_id}/job-proposals', [JobProposalController::class, 'workerProposals'])
+            ->middleware(['ability:worker_proposal:view']);
+
+        Route::get('job-proposals/{job_proposal_id}', [JobProposalController::class, 'show'])
+            ->middleware(['ability:job_proposal:view']);
+    });
+
 });

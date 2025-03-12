@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\JobPost;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
@@ -12,6 +13,7 @@ class StoreRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+        // return true;
     }
 
     /**
@@ -25,13 +27,13 @@ class StoreRequest extends FormRequest
             "creator_id" => ["required"],
             "service_id" => ["required",],
             "transaction_type" => ["required", "in:fixed,hourly"],
-            "title" => ["nullable"],
             "address" => ["required"],
             "latitude" => ["required_with:address"],
             "longitude" => ["required_with:address"],
             "description" => ["required"],
             "notes" => ["nullable"],
             "job_attachments" => ["nullable", "array"],
+            "job_attachments.*" => ['file', 'max:3072'],
             "urgency" => ["required", "in:book_now,scheduled"],
             "scheduled_date" => ["nullable", "required_if:urgency,scheduled", "date_format:Y-m-d"],
             "scheduled_time" => ["nullable", "required_if:urgency,scheduled", "date_format:H:i"],

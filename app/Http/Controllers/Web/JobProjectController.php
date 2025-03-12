@@ -149,18 +149,18 @@ class JobProjectController extends Controller
     public function storeNewAttachments(StoreAttachmentRequest $request)
     {
         try {
-            $job_project = JobProject::findOr($request->job_id, fn () => throw new Exception('Job Project Not Found.', 404));
+            $job_project = JobProject::findOr($request->job_id, fn() => throw new Exception('Job Project Not Found.', 404));
 
             if ($request->has('job_attachments')) {
                 foreach ($request->job_attachments as $key => $attachment) {
-                    $filename = Str::random(5).'_'.time().'.'.$attachment->getClientOriginalExtension();
+                    $filename = Str::random(5) . '_' . time() . '.' . $attachment->getClientOriginalExtension();
 
-                    $filePath = 'job_projects/attachments/'.$job_project->id.'/';
+                    $filePath = 'job_projects/attachments/' . $job_project->id . '/';
                     Storage::disk('public')->putFileAs($filePath, $attachment, $filename);
 
                     JobAttachment::create([
                         'job_id' => $job_project->id,
-                        'attachment_filename' => $filename,
+                        'attachment_file' => $filename,
                     ]);
                 }
             }
@@ -177,8 +177,8 @@ class JobProjectController extends Controller
     }
 
     /**
-     * Remove the specified attachment from storage and database 
-     * 
+     * Remove the specified attachment from storage and database
+     *
      * @param Request $request
      * @param string $id
      */
@@ -190,7 +190,7 @@ class JobProjectController extends Controller
                 throw new Exception('Attachment Not Found', 404);
             });
 
-            $attachmentPath = 'job_projects/attachments/'.$jobAttachment->job_id.'/'.$jobAttachment->attachment_filename;
+            $attachmentPath = 'job_projects/attachments/' . $jobAttachment->job_id . '/' . $jobAttachment->attachment_file;
 
             if (Storage::disk('public')->exists($attachmentPath)) {
                 Storage::disk('public')->delete($attachmentPath);

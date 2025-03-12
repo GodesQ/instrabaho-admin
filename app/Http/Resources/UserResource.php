@@ -25,7 +25,7 @@ class UserResource extends JsonResource
             'email_verified_at' => $this->email_verified_at,
             'status' => $this->status,
             'worker' => $this->when($this->worker, WorkerResource::make($this->worker)),
-            'client' => $this->when($this->client, $this->client),
+            'client' => $this->when($this->client, ClientResource::make($this->client)),
         ];
     }
 }

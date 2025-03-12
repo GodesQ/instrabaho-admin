@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('profile_photo')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->enum('status', ['active', 'inactive', 'blocked'])->default('active');
+            $table->enum('user_role_type', ['user', 'admin']);
             $table->string('remember_token', 100)->nullable();
             $table->timestamps();
         });
@@ -89,8 +90,8 @@ return new class extends Migration {
             $table->string('address', 120);
             $table->string('latitude', 100);
             $table->string('longitude', 100);
-            $table->string('identification_filename', 250)->nullable();
-            $table->string('nbi_copy_filename', 250)->nullable();
+            $table->string('identification_file', 250)->nullable();
+            $table->string('nbi_copy_file', 250)->nullable();
             $table->boolean('is_verified_worker')->default(0);
             $table->timestamps();
         });
@@ -145,7 +146,7 @@ return new class extends Migration {
         Schema::create('job_post_attachments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('job_post_id')->constrained('job_posts')->cascadeOnDelete();
-            $table->string('attachment_filename');
+            $table->string('attachment_file');
             $table->timestamps();
         });
 

@@ -29,6 +29,8 @@ class JobPost extends Model
     protected function casts(): array
     {
         return [
+            "creator_id" => 'integer',
+            'service_id' => 'integer',
             'published_at' => 'datetime',
             'withdraw_amount' => 'double',
         ];

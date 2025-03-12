@@ -27,7 +27,7 @@ class ClientRegisterRequest extends FormRequest
             'profile_photo' => ['nullable'],
             'username' => ['required'],
             'country_code' => ['required', 'in:63'],
-            'contact_number' => ['required', 'max:10'],
+            'contact_number' => ['required', 'max:10', 'unique:clients,contact_number'],
             'address' => ['required'],
             'latitude' => ['required_with:address'],
             'longitude' => ['required_with:address'],

@@ -397,7 +397,7 @@
             e.preventDefault();
             const formData = new FormData(e.target);
 
-            formData.delete("identification_filename");
+            formData.delete("identification_file");
 
             let submitBtn = document.querySelector('#submit-worker-btn');
 

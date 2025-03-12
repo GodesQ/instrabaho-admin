@@ -20,8 +20,8 @@ class Worker extends Model
         'address',
         'latitude',
         'longitude',
-        'identification_filename',
-        'nbi_copy_filename',
+        'identification_file',
+        'nbi_copy_file',
         'is_verified_worker',
     ];
 
@@ -43,5 +43,10 @@ class Worker extends Model
     public function worker_service()
     {
         return $this->hasOne(WorkerJobService::class, 'worker_id');
+    }
+
+    public function job_proposals()
+    {
+        return $this->hasMany(JobProposal::class, 'worker_id');
     }
 }

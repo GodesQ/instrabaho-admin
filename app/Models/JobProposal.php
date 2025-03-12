@@ -22,6 +22,8 @@ class JobProposal extends Model
     protected function casts(): array
     {
         return [
+            'worker_id' => 'integer',
+            'job_post_id' => 'integer',
             'offer_amount' => 'double',
         ];
     }

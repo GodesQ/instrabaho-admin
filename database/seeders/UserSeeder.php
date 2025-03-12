@@ -54,8 +54,8 @@ class UserSeeder extends Seeder
             'address' => 'Test Address Rodriguez Rizal',
             'latitude' => '14.721612',
             'longitude' => '121.144247',
-            'identification_filename' => 'james_worker.jpg',
-            'nbi_copy_filename' => 'james_worker.jpg',
+            'identification_file' => 'james_worker.jpg',
+            'nbi_copy_file' => 'james_worker.jpg',
             'is_verified_worker' => true,
         ]);
 
@@ -90,7 +90,7 @@ class UserSeeder extends Seeder
         Client::create([
             'user_id' => $userClient->id,
             'country_code' => 63,
-            'contact_number' => 9633987953,
+            'contact_number' => 9121089081,
             'address' => 'Test Address Rodriguez Rizal',
             'latitude' => '14.721612',
             'longitude' => '121.144247',

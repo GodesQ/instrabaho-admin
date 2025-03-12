@@ -476,7 +476,7 @@
             }
 
             // Delete unnecessary fields if any
-            formData.delete("identification_filename");
+            formData.delete("identification_file");
 
             // Convert FormData to JSON object
             let formObject = {};

@@ -33,9 +33,9 @@ class WorkerRegisterRequest extends FormRequest
             'address' => ['required'],
             'latitude' => ['required_with:address'],
             'longitude' => ['required_with:address'],
-            'identification_file' => ['required', 'max:50'],
-            'nbi_copy_file' => ['required', 'max:50'],
-            'service_id' => ['required', 'max:50', 'exists:services,id'],
+            'identification_file' => ['required', 'max:3072'],
+            'nbi_copy_file' => ['required', 'max:3072'],
+            'service_id' => ['required', 'exists:services,id'],
         ];
     }
 }

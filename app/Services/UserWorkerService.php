@@ -47,7 +47,7 @@ class UserWorkerService
                 Storage::disk('public')->putFileAs($filePath, $file, $filename);
 
                 $worker->update([
-                    'identification_filename' => $filename,
+                    'identification_file' => $filename,
                 ]);
             }
 
@@ -89,7 +89,7 @@ class UserWorkerService
                 Storage::disk('public')->putFileAs($filePath, $file, $filename);
 
                 $worker->update([
-                    'identification_filename' => $filename,
+                    'identification_file' => $filename,
                 ]);
             }
 

@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->hasOne(Worker::class, 'user_id');
     }
 
+    public function client()
+    {
+        return $this->hasOne(Client::class, 'user_id');
+    }
+
     public function isSuperAdmin()
     {
         return auth()->user()->hasRole('super admin');
