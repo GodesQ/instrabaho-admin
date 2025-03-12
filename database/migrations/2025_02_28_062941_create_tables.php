@@ -55,7 +55,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('user_wallet_id')->constrained('users_wallets')->onDelete('cascade');
             $table->double('amount')->default(0);
-            $table->enum('transfer_type', ['withdraw', 'deposit']);
+            $table->enum('transfer_type', ['withdraw', 'deposit', 'system_transfer']);
             $table->json('metadata')->nullable();
             $table->timestamp('withdraw_at')->nullable();
             $table->timestamp('deposit_at')->nullable();
@@ -200,7 +200,7 @@ return new class extends Migration {
             $table->enum('status', ['in_progress', 'cancelled', 'reported', 'success', 'failed']);
             $table->text('failed_reason')->nullable();
             $table->timestamp('ended_at')->nullable();
-            $table->enum('worker_progress', ['preparing', 'on_way', 'arriving', 'arrived', 'working', 'done', 'cancelled']);
+            $table->enum('worker_progress', ['waiting', 'preparing', 'on_way', 'arriving', 'arrived', 'working', 'done', 'cancelled']);
             $table->timestamps();
         });
 
