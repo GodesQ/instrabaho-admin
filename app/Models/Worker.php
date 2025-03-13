@@ -32,6 +32,8 @@ class Worker extends Model
             'birthdate' => 'date',
             'is_verified_worker' => 'boolean',
             'hourly_rate' => 'double',
+            'latitude' => 'string',
+            'longitude' => 'string',
         ];
     }
 

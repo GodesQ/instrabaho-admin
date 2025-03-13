@@ -22,7 +22,9 @@ class ClientResource extends JsonResource
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
             'facebook_url' => $this->facebook_url,
-            'user' => $this->when($request->client_id, new UserResource($this->user)),
+            'user' => $this->whenLoaded('user', function () {
+                return new UserResource($this->user);
+            }),
         ];
     }
 }

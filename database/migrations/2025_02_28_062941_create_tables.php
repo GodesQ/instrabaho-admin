@@ -194,13 +194,13 @@ return new class extends Migration {
             $table->double('contract_amount')->default(0);
             $table->double('client_service_fee')->default(0);
             $table->double('contract_total_amount')->default(0);
-            $table->double('metadata')->default(0);
+            $table->json('metadata')->nullable();
             $table->boolean('is_client_approved')->default(0);
             $table->boolean('is_worker_approved')->default(0);
             $table->enum('status', ['in_progress', 'cancelled', 'reported', 'success', 'failed']);
             $table->text('failed_reason')->nullable();
             $table->timestamp('ended_at')->nullable();
-            $table->enum('worker_progress', ['preparing', 'on_way', 'arriving', 'arrived', 'working', 'done', 'cancelled']);
+            $table->enum('worker_progress', ['waiting', 'preparing', 'on_way', 'arriving', 'arrived', 'working', 'done', 'cancelled']);
             $table->timestamps();
         });
 

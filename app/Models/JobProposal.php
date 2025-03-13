@@ -25,6 +25,8 @@ class JobProposal extends Model
             'worker_id' => 'integer',
             'job_post_id' => 'integer',
             'offer_amount' => 'double',
+            'latitude' => 'string',
+            'longitude' => 'string',
         ];
     }
 
