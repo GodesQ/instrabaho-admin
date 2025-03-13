@@ -101,10 +101,10 @@ class ProcessJobPostWorkers implements ShouldQueue
         $totalScore = $proximityTotal + $availabilityTotal + $skillMatchTotal + $ratingTotal;
 
         return [
-            'total_score' => $totalScore,
-            'proximity_total' => $proximityTotal,
-            'availability_total' => $availabilityTotal,
-            'skill_match_total' => $skillMatchTotal,
+            'total_score' => number_format($totalScore, 2),
+            'proximity_total' => number_format($proximityTotal, 2),
+            'availability_total' => number_format($availabilityTotal, 2),
+            'skill_match_total' => number_format($skillMatchTotal, 2),
             'rating_total' => number_format($ratingTotal, 2),
         ];
     }

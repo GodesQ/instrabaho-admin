@@ -26,7 +26,7 @@ class JobProposalController extends Controller
                 ->where('job_post_id', $request->job_post_id)
                 ->exists();
 
-            // check if the worker is in the ranked workers of job post.
+            // check if the worker is in the ranked workers list of job post.
             if (!$rankedWorker) {
                 throw new Exception('The worker is not qualified to submit a proposal.', 400);
             }

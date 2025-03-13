@@ -36,6 +36,7 @@ class AuthController extends Controller
             'job_post:delete',
             'job_post:view',
             'job_proposal:view',
+            'job_contract:store',
             'worker_review:store',
             'worker_review:delete',
             'notification:view',

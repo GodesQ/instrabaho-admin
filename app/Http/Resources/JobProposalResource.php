@@ -24,8 +24,14 @@ class JobProposalResource extends JsonResource
             "latitude" => $this->latitude,
             "longitude" => $this->longitude,
             "status" => $this->status,
-            "worker" => $this->when($this->requiredOtherDetails($request), WorkerResource::make($this->worker)),
-            "job_post" => $this->when($this->requiredFullDetails($request), JobPostResource::make($this->job_post)),
+            "worker" => $this->when(
+                !$this->relationLoaded('inside_contract') && ($request->proposal_id || $request->job_proposal_id),
+                WorkerResource::make($this->worker)
+            ),
+            "job_post" => $this->when(
+                !$this->relationLoaded('inside_contract') && ($request->proposal_id || $request->job_proposal_id || $request->is('api/*/workers/*/job-proposals')),
+                JobPostResource::make($this->job_post)
+            ),
         ];
     }
 

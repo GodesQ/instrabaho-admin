@@ -15,7 +15,7 @@ class JobContract extends Model
         'worker_id',
         'contract_amount',
         'client_service_fee',
-        'total_amount',
+        'contract_total_amount',
         'is_client_approved',
         'is_worker_approved',
         'status',
@@ -43,6 +43,11 @@ class JobContract extends Model
     public function worker()
     {
         return $this->belongsTo(Worker::class, 'worker_id');
+    }
+
+    public function job_proposal()
+    {
+        return $this->belongsTo(JobProposal::class, 'proposal_id');
     }
 
     public function contract_worker_progresses()

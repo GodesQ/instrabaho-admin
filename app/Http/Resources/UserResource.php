@@ -24,8 +24,12 @@ class UserResource extends JsonResource
             'profile_photo' => $this->profile_photo,
             'email_verified_at' => $this->email_verified_at,
             'status' => $this->status,
-            'worker' => $this->when($this->worker, WorkerResource::make($this->worker)),
-            'client' => $this->when($this->client, ClientResource::make($this->client)),
+            'worker' => $this->whenLoaded('worker', function () {
+                return WorkerResource::make($this->worker);
+            }),
+            'client' => $this->whenLoaded('client', function () {
+                return ClientResource::make($this->client);
+            }),
         ];
     }
 }

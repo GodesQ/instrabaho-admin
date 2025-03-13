@@ -29,6 +29,9 @@ class WorkerResource extends JsonResource
             "latitude" => $this->latitude,
             "longitude" => $this->longitude,
             "is_verified_worker" => $this->is_verified_worker,
+            'user' => $this->whenLoaded('user', function () {
+                return new UserResource($this->user);
+            }),
         ];
     }
 }
