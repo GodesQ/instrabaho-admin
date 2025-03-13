@@ -7,6 +7,7 @@ use App\Enum\JobPostStatusEnum;
 use App\Enum\JobProposalStatusEnum;
 use App\Enum\RoleEnum;
 use App\Models\Client;
+use App\Models\ContractWorkerProgressLog;
 use Exception;
 use App\Enum\JobContractStatusEnum;
 use App\Models\JobContract;
@@ -49,6 +50,7 @@ class JobContractService
             $jobContract = JobContract::create([
                 'contract_code_number' => $contractCodeNumber,
                 'proposal_id' => $jobProposal->id,
+                'job_post_id' => $jobProposal->job_post_id,
                 'worker_id' => $jobProposal->worker_id,
                 'client_id' => $request->client_id,
                 'contract_amount' => $request->contract_amount,
@@ -130,12 +132,22 @@ class JobContractService
                 throw new Exception('Unauthorized worker.', 403);
             }
 
+            if (!$jobContract->is_worker_approved) {
+                throw new Exception('This contract is not yet approved by the worker.', 400);
+            }
+
             $jobContract->update([
                 'worker_progress' => $request->worker_progress,
             ]);
 
-            if ($request->worker_progress === ContractWorkerProgressEnum::DONE) {
+            ContractWorkerProgressLog::create([
+                'contract_id' => $jobContract->id,
+                'worker_id' => $jobContract->worker_id,
+                'status' => $request->worker_progress,
+            ]);
 
+            if ($request->worker_progress === ContractWorkerProgressEnum::DONE) {
+                // Notify Client
             }
 
             DB::commit();

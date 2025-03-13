@@ -31,4 +31,23 @@ class JobPostController extends Controller
             return $exceptionHandler->handler($request, $exception);
         }
     }
+
+    public function updateJobStatus(Request $request, $job_post_id)
+    {
+        try {
+            $jobPostService = new JobPostService();
+            $jobPost = $jobPostService->updateStatus($request, $job_post_id);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Status Updated Successfully',
+                'job_post' => $jobPost,
+            ]);
+
+        } catch (Exception $exception) {
+            DB::rollBack();
+            $exceptionHandler = new ExceptionHandlerService;
+            return $exceptionHandler->handler($request, $exception);
+        }
+    }
 }

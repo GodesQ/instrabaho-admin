@@ -46,6 +46,11 @@ class JobPost extends Model
         return $this->belongsTo(Client::class, "creator_id");
     }
 
+    public function job_contract()
+    {
+        return $this->hasOne(JobContract::class, 'job_post_id');
+    }
+
     public function job_post_attachments()
     {
         return $this->hasMany(JobAttachment::class, "job_post_id");

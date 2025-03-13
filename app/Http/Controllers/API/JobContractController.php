@@ -74,7 +74,6 @@ class JobContractController extends Controller
 
     public function updateWorkerProgress(Request $request, $job_contract_id)
     {
-
         $request->validate([
             'worker_progress' => ['required', 'in:waiting,preparing,on_way,arriving,arrived,working,done,cancelled']
         ]);

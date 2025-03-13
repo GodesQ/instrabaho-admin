@@ -11,6 +11,7 @@ class JobContract extends Model
         'contract_code_number',
         'transaction_id',
         'proposal_id',
+        'job_post_id',
         'client_id',
         'worker_id',
         'contract_amount',

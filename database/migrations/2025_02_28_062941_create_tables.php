@@ -189,6 +189,7 @@ return new class extends Migration {
             $table->string('contract_code_number', 50);
             $table->foreignId('transaction_id')->nullable()->constrained('transactions')->nullOnDelete();
             $table->foreignId('proposal_id')->constrained('job_proposals')->onDelete('cascade');
+            $table->foreignId('job_post_id')->constrained('job_posts')->onDelete('cascade');
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
             $table->foreignId('worker_id')->constrained('workers')->onDelete('cascade');
             $table->double('contract_amount')->default(0);

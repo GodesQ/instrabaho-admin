@@ -2,11 +2,19 @@
 
 namespace App\Services;
 
+use App\Enum\ContractWorkerProgressEnum;
+use App\Enum\JobContractStatusEnum;
+use App\Enum\JobPostStatusEnum;
 use App\Jobs\ProcessJobPostWorkers;
 use App\Models\JobAttachment;
+use App\Models\JobContract;
+use App\Models\JobContractWallet;
 use App\Models\JobPost;
 use App\Models\JobProject;
 use App\Models\JobService;
+use App\Models\UserWallet;
+use App\Models\UserWalletLog;
+use App\Services\Handlers\ExceptionHandlerService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -147,6 +155,34 @@ class JobPostService
         }
     }
 
+    public function updateStatus($request, $job_post_id)
+    {
+        try {
+            DB::beginTransaction();
+            $jobPost = JobPost::with('job_contract')->find($job_post_id);
+
+            if ($jobPost->job_contract->worker_progress !== ContractWorkerProgressEnum::DONE) {
+                throw new Exception("Worker progress is not completed. Please ensure the contract is marked as 'DONE' before proceeding.", 400);
+            }
+
+            $jobPost->update([
+                'status' => $request->status,
+            ]);
+
+            if ($request->status === JobPostStatusEnum::COMPLETED) {
+                $this->handleJobCompleted($jobPost);
+            }
+
+            DB::commit();
+
+            return $jobPost;
+
+        } catch (Exception $exception) {
+            DB::rollBack();
+            throw $exception;
+        }
+    }
+
     public function delete($id)
     {
         try {
@@ -181,6 +217,38 @@ class JobPostService
     public function deleteAttachment($id)
     {
 
+    }
+
+
+    private function handleJobCompleted($jobPost)
+    {
+        $jobContractWallet = JobContractWallet::where('contract_id', $jobPost->job_contract->id)
+            ->first();
+
+        $workerUserId = $jobPost->job_contract->worker->user_id;
+
+        $userWallet = UserWallet::where('user_id', $workerUserId)
+            ->first();
+
+        $workerServiceFeePercentage = 0.10;
+        $workerServiceFeeTotal = (int) $jobContractWallet->amount * $workerServiceFeePercentage;
+
+        $totalWorkerPaidAmount = $jobContractWallet->amount - $workerServiceFeeTotal;
+
+        $userWallet->update([
+            'balance' => (int) $userWallet->balance + (int) $totalWorkerPaidAmount,
+        ]);
+
+        UserWalletLog::create([
+            'user_id' => $workerUserId,
+            'user_wallet_id' => $userWallet->id,
+            'amount' => $totalWorkerPaidAmount,
+            'transfer_type' => 'system_transfer',
+            'metadata' => json_encode([
+                'tranferred_by' => 'contract wallet',
+                'contract_code_number' => $jobPost->job_contract->contract_code_number,
+            ])
+        ]);
     }
 
 }

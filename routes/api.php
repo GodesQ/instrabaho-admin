@@ -24,6 +24,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('job-posts', [JobPostController::class, 'store'])
             ->middleware(['ability:job_post:store']);
 
+        Route::patch('job-posts/{job_post_id}/status', [JobPostController::class, 'updateJobStatus'])
+            ->middleware(['ability:job_post:update_status']);
+
         Route::post('job-proposals', [JobProposalController::class, 'store'])
             ->middleware(['ability:job_proposal:store']);
 
@@ -41,7 +44,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::patch('workers/{worker_id}/job-contracts/{job_contract_id}/accept', [JobContractController::class, 'workerAcceptOffer']);
         // ->middleware(['ability:job_contract:worker_accept']);
 
-        Route::
+        Route::patch('job-contracts/{job_contract_id}/worker-progress', [JobContractController::class, 'updateWorkerProgress']);
     });
 
 });
