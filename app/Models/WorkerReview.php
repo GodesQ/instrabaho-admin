@@ -14,4 +14,12 @@ class WorkerReview extends Model
         "rate",
         "metadata"
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'rate' => 'integer',
+            'metadata' => 'array',
+        ];
+    }
 }

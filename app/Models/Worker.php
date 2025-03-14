@@ -20,7 +20,35 @@ class Worker extends Model
         'address',
         'latitude',
         'longitude',
-        'identification_filename',
+        'identification_file',
+        'nbi_copy_file',
         'is_verified_worker',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'age' => 'integer',
+            'birthdate' => 'date',
+            'is_verified_worker' => 'boolean',
+            'hourly_rate' => 'double',
+            'latitude' => 'string',
+            'longitude' => 'string',
+        ];
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function worker_service()
+    {
+        return $this->hasOne(WorkerJobService::class, 'worker_id');
+    }
+
+    public function job_proposals()
+    {
+        return $this->hasMany(JobProposal::class, 'worker_id');
+    }
 }

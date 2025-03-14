@@ -16,4 +16,14 @@ class Transaction extends Model
         "payment_method",
         "status",
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'processing_fee' => 'double',
+            'sub_amount' => 'double',
+            'discount' => 'double',
+            'total_amount' => 'double',
+        ];
+    }
 }

@@ -17,4 +17,20 @@ class Client extends Model
         "longitude",
         "facebook_url"
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'user_id' => 'string',
+            'country_code' => 'integer',
+            'contact_number' => 'string',
+            'latitude' => 'string',
+            'longitude' => 'string',
+        ];
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
