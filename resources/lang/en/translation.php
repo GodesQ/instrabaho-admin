@@ -222,6 +222,8 @@ return [
 
     "job" => "Job",
     "job-posts" => "Job Posts",
+    "job-proposals" => "Job Proposals",
+    "job-contracts" => "Job Contracts",
     "statistics" => "Statistics",
     "job-lists" => "Job Lists",
     "candidate-lists" => "Candidate Lists",

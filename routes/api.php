@@ -24,8 +24,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('job-posts', [JobPostController::class, 'store'])
             ->middleware(['ability:job_post:store']);
 
-        Route::patch('job-posts/{job_post_id}/status', [JobPostController::class, 'updateJobStatus'])
-            ->middleware(['ability:job_post:update_status']);
+        Route::patch('job-posts/{job_post_id}/status', [JobPostController::class, 'updateJobStatus']);
+        // ->middleware(['ability:job_post:update_status']);
 
         Route::post('job-proposals', [JobProposalController::class, 'store'])
             ->middleware(['ability:job_proposal:store']);

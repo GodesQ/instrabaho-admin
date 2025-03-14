@@ -18,7 +18,7 @@ class JobProposalController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**

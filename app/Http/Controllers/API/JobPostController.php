@@ -41,7 +41,7 @@ class JobPostController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Status Updated Successfully',
-                'job_post' => $jobPost,
+                'job_post' => JobPostResource::make($jobPost),
             ]);
 
         } catch (Exception $exception) {

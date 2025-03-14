@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enum\ContractWorkerProgressEnum;
 use App\Enum\JobContractStatusEnum;
 use App\Enum\JobPostStatusEnum;
+use App\Enum\UserWalletTransferTypeEnum;
 use App\Jobs\ProcessJobPostWorkers;
 use App\Models\JobAttachment;
 use App\Models\JobContract;
@@ -18,6 +19,7 @@ use App\Services\Handlers\ExceptionHandlerService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
@@ -72,7 +74,7 @@ class JobPostService
     public function store($request)
     {
         try {
-            // dd($request->all());
+            # dd($request->all());
             DB::beginTransaction();
 
             $job_post_data = $request->only(
@@ -161,17 +163,26 @@ class JobPostService
             DB::beginTransaction();
             $jobPost = JobPost::with('job_contract')->find($job_post_id);
 
+            if (!$jobPost) {
+                throw new Exception('Job Post Not Found.', 404);
+            }
+
             if ($jobPost->job_contract->worker_progress !== ContractWorkerProgressEnum::DONE) {
                 throw new Exception("Worker progress is not completed. Please ensure the contract is marked as 'DONE' before proceeding.", 400);
+            }
+
+            if ($request->status === JobPostStatusEnum::COMPLETED) {
+                $this->processJobCompletionPayment($jobPost);
+
+                $jobPost->job_contract->update([
+                    'status' => JobContractStatusEnum::SUCCESS,
+                    'ended_at' => Carbon::now()
+                ]);
             }
 
             $jobPost->update([
                 'status' => $request->status,
             ]);
-
-            if ($request->status === JobPostStatusEnum::COMPLETED) {
-                $this->handleJobCompleted($jobPost);
-            }
 
             DB::commit();
 
@@ -192,7 +203,7 @@ class JobPostService
                 throw new Exception('Job Post Not Found', 404);
             });
 
-            // Remove all files from the directory
+            # Remove all files from the directory
             $directory = public_path('uploads/job_posts/attachments/') . $jobPost->id;
             $files = glob($directory . '/*');
             foreach ($files as $file) {
@@ -220,35 +231,63 @@ class JobPostService
     }
 
 
-    private function handleJobCompleted($jobPost)
+    private function processJobCompletionPayment($jobPost)
     {
         $jobContractWallet = JobContractWallet::where('contract_id', $jobPost->job_contract->id)
             ->first();
 
+        # Step 1: ✅
+        # Check if the job post is marked as completed, the job contract status is successful, and the contract wallet has a recorded withdrawal time. If all conditions are met, throw an exception to prevent a duplicate balance transfer from the contract wallet to the user's wallet.
+        if (
+            $jobPost->status === JobPostStatusEnum::COMPLETED &&
+            $jobPost->job_contract->status === JobContractStatusEnum::SUCCESS &&
+            $jobContractWallet->contract_withdraw_at !== null
+        ) {
+            Log::error("Duplicate balance transfer attempt for contract ID: {$jobPost->job_contract->id}");
+            throw new Exception("Balance transfer already completed.", 400);
+        }
+
         $workerUserId = $jobPost->job_contract->worker->user_id;
+        $userWallet = UserWallet::firstOrCreate(
+            [
+                'user_id' => $workerUserId,
+            ],
+            [
+                'balance' => 0,
+            ]
+        );
 
-        $userWallet = UserWallet::where('user_id', $workerUserId)
-            ->first();
+        # Step 2: ✅
+        # Calculate the total amount paid to the worker by subtracting the worker's service fee from the contract wallet balance.
+        $totalWorkerPaidAmount = $jobContractWallet->amount - $jobPost->job_contract->worker_service_fee;
 
-        $workerServiceFeePercentage = 0.10;
-        $workerServiceFeeTotal = (int) $jobContractWallet->amount * $workerServiceFeePercentage;
+        DB::transaction(function () use ($userWallet, $totalWorkerPaidAmount, $workerUserId, $jobPost, $jobContractWallet) {
+            # Step 3: ✅
+            # Transfer the calculated total amount paid to the worker from the contract wallet to the user's wallet.
+            $userWallet->update([
+                'balance' => (int) $userWallet->balance + (int) $totalWorkerPaidAmount,
+            ]);
 
-        $totalWorkerPaidAmount = $jobContractWallet->amount - $workerServiceFeeTotal;
+            # Step 4: ✅
+            # Record the transaction details in the user's wallet log.
+            UserWalletLog::create([
+                'user_id' => $workerUserId,
+                'user_wallet_id' => $userWallet->id,
+                'amount' => $totalWorkerPaidAmount,
+                'transfer_type' => UserWalletTransferTypeEnum::SYSTEM_TRANSFER,
+                'metadata' => [
+                    'tranferred_by' => 'contract wallet',
+                    'contract_code_number' => $jobPost->job_contract->contract_code_number,
+                ]
+            ]);
 
-        $userWallet->update([
-            'balance' => (int) $userWallet->balance + (int) $totalWorkerPaidAmount,
-        ]);
-
-        UserWalletLog::create([
-            'user_id' => $workerUserId,
-            'user_wallet_id' => $userWallet->id,
-            'amount' => $totalWorkerPaidAmount,
-            'transfer_type' => 'system_transfer',
-            'metadata' => json_encode([
-                'tranferred_by' => 'contract wallet',
-                'contract_code_number' => $jobPost->job_contract->contract_code_number,
-            ])
-        ]);
+            # Step 5: ✅
+            # Update the contract wallet's withdrawal amount and the withdrawal time to reflect the successful balance transfer. This prevents duplicate balance transfers from the contract wallet to the user's wallet.
+            $jobContractWallet->update([
+                'withdraw_amount' => $totalWorkerPaidAmount,
+                'contract_withdraw_at' => Carbon::now(),
+            ]);
+        });
     }
 
 }

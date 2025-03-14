@@ -84,6 +84,16 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('job-proposals.index') }}">
+                        <i class="bx bx-collection"></i> <span>@lang('translation.job-proposals')</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('job-contracts.index') }}">
+                        <i class="bx bx-collection"></i> <span>@lang('translation.job-contracts')</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarServices" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarServices">
                         <i class='bx bx-briefcase'></i> <span>@lang('translation.services')</span>
@@ -91,7 +101,8 @@
                     <div class="collapse menu-dropdown" id="sidebarServices">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ route('service-categories.index') }}" class="nav-link">@lang('translation.service-categories')</a>
+                                <a href="{{ route('service-categories.index') }}"
+                                    class="nav-link">@lang('translation.service-categories')</a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('job-services.index') }}" class="nav-link">@lang('translation.job-services')</a>

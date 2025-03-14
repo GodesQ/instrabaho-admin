@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\JobContract\StoreRequest;
 
+use App\Models\Client;
 use App\Models\JobContract;
+use App\Models\Worker;
 use App\Services\Handlers\ExceptionHandlerService;
 use App\Services\JobContractService;
 use Exception;
@@ -23,9 +25,14 @@ class JobContractController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            $jobContracts = JobContract::query();
+            return $this->jobContractService->datatable($jobContracts);
+        }
+
+        return view('pages.job-contracts.index-job-contracts');
     }
 
     /**
@@ -33,7 +40,9 @@ class JobContractController extends Controller
      */
     public function create()
     {
-        //
+        $workers = Worker::with('user')->get();
+        $clients = Client::with('user')->get();
+        return view('pages.job-contracts.create-job-contract', compact('workers', 'clients'));
     }
 
     /**

@@ -14,6 +14,7 @@
         "laravel/pulse": "^1.4",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
+        "rap2hpoutre/laravel-log-viewer": "^2.5",
         "spatie/laravel-permission": "^6.15",
         "yajra/laravel-datatables-oracle": "^12.0"
     },

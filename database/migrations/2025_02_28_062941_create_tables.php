@@ -194,6 +194,7 @@ return new class extends Migration {
             $table->foreignId('worker_id')->constrained('workers')->onDelete('cascade');
             $table->double('contract_amount')->default(0);
             $table->double('client_service_fee')->default(0);
+            $table->double('worker_service_fee')->default(0);
             $table->double('contract_total_amount')->default(0);
             $table->json('metadata')->nullable();
             $table->boolean('is_client_approved')->default(0);

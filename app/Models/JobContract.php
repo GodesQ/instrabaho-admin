@@ -16,6 +16,7 @@ class JobContract extends Model
         'worker_id',
         'contract_amount',
         'client_service_fee',
+        'worker_service_fee',
         'contract_total_amount',
         'is_client_approved',
         'is_worker_approved',
@@ -44,6 +45,11 @@ class JobContract extends Model
     public function worker()
     {
         return $this->belongsTo(Worker::class, 'worker_id');
+    }
+
+    public function wallet()
+    {
+        return $this->hasOne(JobContractWallet::class, 'contract_id');
     }
 
     public function job_proposal()

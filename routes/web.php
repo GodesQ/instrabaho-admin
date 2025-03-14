@@ -20,6 +20,7 @@ Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'saveLogin'])->name('login.post');
 
 Route::group(['middleware' => ['auth']], function () {
+
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('dashboard', function () {
@@ -45,4 +46,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('job-contracts', JobContractController::class);
 
     Route::resource('job-contract-worker-progresses', ContractWorkerProgressController::class);
+
+    Route::get('system-server-logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 });
