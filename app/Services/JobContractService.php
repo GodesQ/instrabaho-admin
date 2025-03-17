@@ -32,6 +32,9 @@ class JobContractService
             ->editColumn('contract_amount', function ($row) {
                 return "₱ " . number_format($row->contract_amount, 2);
             })
+            ->editColumn('status', function ($row) {
+                return str_replace('_', ' ', $row->status);
+            })
             ->addColumn('action', function ($row) {
                 return '<ul class="list-inline hstack gap-1 mb-0">
                             <li class="list-inline-item edit" title="Show">

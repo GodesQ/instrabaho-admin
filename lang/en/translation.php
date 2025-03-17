@@ -224,6 +224,7 @@ return [
     "job-posts" => "Job Posts",
     "statistics" => "Statistics",
     "job-lists" => "Job Lists",
+    "feedbacks" => "Feedbacks",
     "candidate-lists" => "Candidate Lists",
     "grid-view" => "Grid View",
     "application" => "Application",

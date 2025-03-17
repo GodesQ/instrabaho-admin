@@ -21,23 +21,57 @@
                     </div>
                 </div>
                 <div class="col-sm-auto">
-                    <div class="d-flex flex-wrap align-items-start gap-2">
+                    <div class="btn-group">
                         <button class="btn btn-soft-danger" id="remove-actions" onClick="deleteMultiple()"><i
                                 class="ri-delete-bin-2-line"></i></button>
                         <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 Create
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <a href="{{ route('workers.create') }}" class="dropdown-item"
-                                    href="#">Worker</a>
-                                <a href="{{ route('customers.create') }}" class="dropdown-item"
-                                    href="#">Customer</a>
+                                <a href="{{ route('workers.create') }}" class="dropdown-item" href="#">Worker</a>
+                                <a href="{{ route('customers.create') }}" class="dropdown-item" href="#">Customer</a>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-secondary"><i
-                                class="ri-file-download-line align-bottom me-1"></i> Export as CSV</button>
+
+                        @if (config('app.env') === 'development')
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#import-workers">
+                                <i class="ri-file-upload-line align-bottom me-1"></i>
+                                Import Workers
+                            </button>
+                            <div id="import-workers" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel"
+                                aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog">
+                                    <form id="import-workers-form" action="{{ route('workers.import') }}" method="post"
+                                        enctype="multipart/form-data">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="myModalLabel">Import Workers</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                @csrf
+                                                <input type="file" class="form-control" id="import-workers-file"
+                                                    name="import-workers-file">
+                                                <div class="form-text text-muted">
+                                                    Only .csv files are allowed.
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-light"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" id="import-workers-btn" class="btn btn-primary ">Save
+                                                    Changes</button>
+                                            </div>
+                                        </div><!-- /.modal-content -->
+                                    </form>
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
+                        @endif
                     </div>
                 </div>
             </div>
@@ -220,6 +254,32 @@
 
         $(document).ready(function() {
             initializeTables();
+
+            $('#import-workers-form').submit(async function(e) {
+                e.preventDefault();
+                let formData = new FormData(e.target);
+                let url = e.target.getAttribute('action');
+                let importWorkersBtn = document.getElementById('import-workers-btn');
+                importWorkersBtn.setAttribute("disabled", true);
+                try {
+                    let response = await fetch(url, {
+                        method: "POST",
+                        body: formData,
+                    });
+
+                    let data = await response.json();
+                    showToastSuccessMessage("Import Successfully!");
+
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } catch (error) {
+                    showToastErrorMessage("Import Failed!");
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                }
+            })
         });
     </script>
 @endpush

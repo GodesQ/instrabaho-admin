@@ -94,6 +94,22 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarFeedbacks" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarServices">
+                        <i class='bx bx-message-square-dots'></i> <span>@lang('translation.feedbacks')</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarFeedbacks">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ route('worker-reviews.index') }}" class="nav-link">@lang('translation.worker-feedbacks')</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('client-reviews.index') }}" class="nav-link">@lang('translation.client-feedbacks')</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarServices" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarServices">
                         <i class='bx bx-briefcase'></i> <span>@lang('translation.services')</span>

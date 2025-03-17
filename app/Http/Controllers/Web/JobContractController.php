@@ -12,6 +12,7 @@ use App\Services\Handlers\ExceptionHandlerService;
 use App\Services\JobContractService;
 use Exception;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class JobContractController extends Controller
 {
@@ -99,5 +100,14 @@ class JobContractController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function download(Request $request, $id)
+    {
+        $jobContract = JobContract::findOrFail($id);
+        $isDownload = $request->is('job-contracts/*/download');
+
+        $pdf = Pdf::loadView('components.job-contract', compact('jobContract', 'isDownload'));
+        return $pdf->stream('invoice.pdf');
     }
 }
