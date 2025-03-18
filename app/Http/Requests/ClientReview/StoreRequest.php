@@ -11,7 +11,7 @@ class StoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'reviewer_id' => ['required', 'exists:workers,id'],
+            'client_id' => ['required', 'exists:clients,id'],
+            'feedback_message' => ['required', 'string', 'max:250'],
+            'rate' => ['required', 'integer', 'min:1', 'max:5'],
+            'questions' => 'nullable|array',
         ];
     }
 }

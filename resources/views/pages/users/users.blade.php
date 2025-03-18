@@ -275,9 +275,7 @@
                     }, 1000);
                 } catch (error) {
                     showToastErrorMessage("Import Failed!");
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
+                    importWorkersBtn.removeAttribute("disabled");
                 }
             })
         });
