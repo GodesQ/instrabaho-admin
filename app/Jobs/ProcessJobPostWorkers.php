@@ -14,6 +14,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 
 class ProcessJobPostWorkers implements ShouldQueue
 {
@@ -80,9 +81,10 @@ class ProcessJobPostWorkers implements ShouldQueue
             ]);
 
             if ($workerData['worker']->user) {
-                $workerData['worker']->user->notify(new WorkerJobPostNotification($this->jobPost));
+                // $workerData['worker']->user->notify(new WorkerJobPostNotification($this->jobPost));
             }
         }
+
     }
 
     private function calculateTotalScore($worker)

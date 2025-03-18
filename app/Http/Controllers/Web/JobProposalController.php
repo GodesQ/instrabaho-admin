@@ -7,18 +7,30 @@ use App\Http\Requests\JobProposal\StoreRequest;
 use App\Models\JobProposal;
 use App\Models\JobRankedWorker;
 use App\Services\Handlers\ExceptionHandlerService;
+use App\Services\JobProposalService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class JobProposalController extends Controller
 {
+    protected $jobProposalService;
+    public function __construct()
+    {
+        $this->jobProposalService = new JobProposalService;
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            $jobProposal = JobProposal::query();
+            return $this->jobProposalService->dataTable($jobProposal);
+        }
+
+        return view('pages.job-proposals.index-job-proposals');
     }
 
     /**

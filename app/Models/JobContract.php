@@ -16,6 +16,7 @@ class JobContract extends Model
         'worker_id',
         'contract_amount',
         'client_service_fee',
+        'worker_service_fee',
         'contract_total_amount',
         'is_client_approved',
         'is_worker_approved',
@@ -28,6 +29,13 @@ class JobContract extends Model
     protected function casts(): array
     {
         return [
+            'job_post_id' => 'integer',
+            'proposal_id' => 'integer',
+            'client_id' => 'integer',
+            'worker_id' => 'integer',
+            'contract_total_amount' => 'double',
+            'status' => 'string',
+            'failed_reason' => 'string',
             'ended_at' => 'datetime',
             'is_client_approved' => 'boolean',
             'is_worker_approved' => 'boolean',
@@ -46,9 +54,19 @@ class JobContract extends Model
         return $this->belongsTo(Worker::class, 'worker_id');
     }
 
+    public function wallet()
+    {
+        return $this->hasOne(JobContractWallet::class, 'contract_id');
+    }
+
     public function job_proposal()
     {
         return $this->belongsTo(JobProposal::class, 'proposal_id');
+    }
+
+    public function job_post()
+    {
+        return $this->belongsTo(JobPost::class, 'job_post_id');
     }
 
     public function contract_worker_progresses()

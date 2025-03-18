@@ -22,4 +22,14 @@ class ClientReview extends Model
             'metadata' => 'array',
         ];
     }
+
+    public function worker()
+    {
+        return $this->belongsTo(Worker::class, 'reviewer_id');
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_id');
+    }
 }

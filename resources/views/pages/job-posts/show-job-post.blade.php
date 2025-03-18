@@ -15,6 +15,15 @@
         @endslot
     @endcomponent
 
+    @if (!$jobPost->job_contract && $jobPost->status === 'completed')
+        <div class="alert alert-danger bg-danger text-white alert-label-icon " role="alert">
+            <i class="ri-error-warning-line label-icon"></i>
+            This job requires a contract before it can begin. Verify whether a contract is in place before the task is
+            finished. First, change the status to "Published".
+        </div>
+    @endif
+
+
     <div class="card">
         <div class="card-header">
             <div class="row g-4 align-items-center">
@@ -154,6 +163,15 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @if ($jobPost->job_contract)
+                                        <div class="pt-3 border-top border-top-dashed mt-4">
+                                            <a href="{{ route('job-contracts.show', $jobPost->job_contract->id) }}"
+                                                class="btn btn-primary">
+                                                <i class="bx bx-file"></i>
+                                                View Contract
+                                            </a>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>

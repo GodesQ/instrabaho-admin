@@ -9,20 +9,14 @@ use App\Http\Requests\Worker\UpdateRequest;
 use App\Models\JobService;
 use App\Models\Service;
 use App\Models\User;
-use App\Models\UserProfile;
 use App\Models\Worker;
-use App\Models\WorkerCertificate;
-use App\Models\WorkerDetail;
-use App\Models\WorkerService;
-use App\Services\ExceptionHandlerService;
+use App\Imports\WorkersImport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Services\Handlers\ExceptionHandlerService;
 use App\Services\UserWorkerService;
 use Carbon\Carbon;
-use DB;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use Str;
 use Yajra\DataTables\DataTables;
 
 class WorkerController extends Controller
@@ -130,7 +124,7 @@ class WorkerController extends Controller
     public function edit(string $id)
     {
         $user = User::with('profile', 'worker_details')->findOrFail($id);
-        $services = Service::active()->get();
+        $services = JobService::active()->get();
 
         return view('backend-pages.users.worker.edit-worker', compact('user', 'services'));
     }
@@ -165,9 +159,26 @@ class WorkerController extends Controller
     public function destroy(string $id)
     {
         $worker = User::where('id', $id)->whereHas('roles.role', function ($query) {
-            $query->where('name', User::ROLE['WORKER']);
+            $query->where('name', RoleEnum::WORKER);
         })->first();
 
+    }
+
+    public function import(Request $request)
+    {
+        try {
+            $request->validate([
+                'import-workers-file' => 'required|mimes:csv,txt',
+            ]);
+            // dd($request->file('import-workers-file'));
+
+            Excel::import(new WorkersImport, $request->file('import-workers-file'));
+
+            return response()->json(['status' => true, 'message' => 'Workers imported successfully']);
+        } catch (Exception $exception) {
+            $exceptionHandler = new ExceptionHandlerService;
+            return $exceptionHandler->handler($request, $exception);
+        }
     }
 
     public function search(Request $request)

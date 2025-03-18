@@ -10,10 +10,13 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "barryvdh/laravel-dompdf": "^3.1",
         "laravel/framework": "^12.0",
         "laravel/pulse": "^1.4",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
+        "maatwebsite/excel": "^3.1",
+        "rap2hpoutre/laravel-log-viewer": "^2.5",
         "spatie/laravel-permission": "^6.15",
         "yajra/laravel-datatables-oracle": "^12.0"
     },

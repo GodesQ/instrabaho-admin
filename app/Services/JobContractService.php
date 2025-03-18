@@ -8,18 +8,49 @@ use App\Enum\JobProposalStatusEnum;
 use App\Enum\RoleEnum;
 use App\Models\Client;
 use App\Models\ContractWorkerProgressLog;
+use Carbon\Carbon;
 use Exception;
 use App\Enum\JobContractStatusEnum;
 use App\Models\JobContract;
 use App\Models\JobContractWallet;
 use App\Models\JobProposal;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\DataTables;
 
 class JobContractService
 {
-    public function __construct()
+    public function datatable($data)
     {
-
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('worker', function ($row) {
+                return ($row->worker->user->first_name ?? '') . ' ' . ($row->worker->user->last_name ?? '');
+            })
+            ->addColumn('client', function ($row) {
+                return ($row->client->user->first_name ?? '') . ' ' . ($row->client->user->last_name ?? '');
+            })
+            ->editColumn('contract_amount', function ($row) {
+                return "₱ " . number_format($row->contract_amount, 2);
+            })
+            ->editColumn('status', function ($row) {
+                return str_replace('_', ' ', $row->status);
+            })
+            ->addColumn('action', function ($row) {
+                return '<ul class="list-inline hstack gap-1 mb-0">
+                            <li class="list-inline-item edit" title="Show">
+                                <a href="' . route('job-contracts.show', $row->id) . '"  class="text-primary d-inline-block edit-item-btn">
+                                    <i class="ri-file-text-line fs-16"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item" title="Remove">
+                                <button class="text-danger btn d-inline-block remove-item-btn" id="' . $row->id . '">
+                                    <i class="ri-delete-bin-5-fill fs-16"></i>
+                                </button>
+                            </li>
+                        </ul>';
+            })
+            ->rawColumns(['action', 'status'])
+            ->make(true);
     }
 
     public function store($request)
@@ -43,9 +74,13 @@ class JobContractService
 
             $this->ensureJobCanBeContracted($jobPostStatus);
 
-            $serviceFeePercentage = .05;
-            $serviceFeeTotal = (int) $request->contract_amount * $serviceFeePercentage;
-            $totalAmount = (int) $request->contract_amount + $serviceFeeTotal;
+            $clientServiceFeePercentage = .05;
+            $clientServiceFeeTotal = (int) $request->contract_amount * $clientServiceFeePercentage;
+
+            $workerServiceFeePercentage = 0.10;
+            $workerServiceFeeTotal = (int) $request->contract_amount * $workerServiceFeePercentage;
+
+            $totalAmount = (int) $request->contract_amount + $clientServiceFeeTotal;
 
             $jobContract = JobContract::create([
                 'contract_code_number' => $contractCodeNumber,
@@ -54,7 +89,8 @@ class JobContractService
                 'worker_id' => $jobProposal->worker_id,
                 'client_id' => $request->client_id,
                 'contract_amount' => $request->contract_amount,
-                'client_service_fee' => $serviceFeeTotal,
+                'client_service_fee' => $clientServiceFeeTotal,
+                'worker_service_fee' => $workerServiceFeeTotal,
                 'contract_total_amount' => $totalAmount,
                 'is_client_approved' => $request->has('is_client_approved') || auth()->user()->hasRole(RoleEnum::CLIENT),
                 'is_worker_approved' => $request->has('is_worker_approved'),
@@ -144,6 +180,9 @@ class JobContractService
                 'contract_id' => $jobContract->id,
                 'worker_id' => $jobContract->worker_id,
                 'status' => $request->worker_progress,
+                'arrived_at' => $request->worker_progress === ContractWorkerProgressEnum::ARRIVED ? Carbon::now() : null,
+                'started_working_at' => $request->worker_progress === ContractWorkerProgressEnum::WORKING ? Carbon::now() : null,
+                'finished_working_at' => $request->worker_progress === ContractWorkerProgressEnum::DONE ? Carbon::now() : null,
             ]);
 
             if ($request->worker_progress === ContractWorkerProgressEnum::DONE) {

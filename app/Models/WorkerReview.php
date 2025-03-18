@@ -18,8 +18,20 @@ class WorkerReview extends Model
     protected function casts(): array
     {
         return [
+            'reviewer_id' => 'integer',
+            'worker_id' => 'integer',
             'rate' => 'integer',
             'metadata' => 'array',
         ];
+    }
+
+    public function worker()
+    {
+        return $this->belongsTo(Worker::class, 'worker_id');
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'reviewer_id');
     }
 }
