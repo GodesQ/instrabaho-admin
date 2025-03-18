@@ -255,6 +255,18 @@ return new class extends Migration {
             $table->timestamp('contract_withdraw_at')->nullable();
             $table->timestamps();
         });
+
+        Schema::create('api_consumers', function (Blueprint $table) {
+            $table->id();
+            $table->string('app_name');
+            $table->string('api_key');
+            $table->string('contact_email')->nullable();
+            $table->string('contact_number')->nullable();
+            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamps();
+        });
     }
 
     /**
