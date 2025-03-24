@@ -5,6 +5,7 @@ use App\Http\Controllers\API\ClientReviewController;
 use App\Http\Controllers\API\JobContractController;
 use App\Http\Controllers\API\JobPostController;
 use App\Http\Controllers\API\JobProposalController;
+use App\Http\Controllers\API\JobServiceController;
 use App\Http\Controllers\API\WorkerReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,8 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::post('workers/login', [AuthController::class, 'workerLogin']);
     Route::post('clients/login', [AuthController::class, 'clientLogin']);
+
+    Route::get('job-services', [JobServiceController::class, 'getJobServices']);
 
     Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('logout', [AuthController::class, 'logout']);
