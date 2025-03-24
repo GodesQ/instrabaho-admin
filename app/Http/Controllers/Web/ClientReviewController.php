@@ -12,7 +12,7 @@ class ClientReviewController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**
